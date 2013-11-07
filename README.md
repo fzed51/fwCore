@@ -8,7 +8,7 @@ TODO :
 
 Tout est à faire :
 - [ ] routage
-- [x] autentification
+- [ ] autentification
 - [ ] controleur
 - [ ] model
 - [ ] vue
