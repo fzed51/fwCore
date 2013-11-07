@@ -1,7 +1,7 @@
 fwCore
 ======
 
-# copyright 2013 Fabien SANCHEZ #
+% copyright 2013 Fabien SANCHEZ %
 
 FrameWork léger
 
