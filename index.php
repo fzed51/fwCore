@@ -5,8 +5,8 @@
  * @copyright 20132
  * @version 0.1
  * =========================================================================
- * fwCore est un framework léger
- * Il a été créer pour comprendre le fonctionnement d'un framework
+ * fwCore est un framework lÃ©ger
+ * Il a Ã©tÃ© crÃ©er pour comprendre le fonctionnement d'un framework
  * =========================================================================
  * @license  
  **/
