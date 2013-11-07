@@ -2,8 +2,8 @@
 /**
  * fwCore
  * @author Fabien SANCHEZ
- * @copyright 20132
- * @version 0.1
+ * @copyright 2013 Fabien SANCHEZ
+ * @version 0.1.1
  * =========================================================================
  * fwCore est un framework léger
  * Il a été créer pour comprendre le fonctionnement d'un framework
@@ -27,4 +27,6 @@ define('ROOT_CONTROLEUR', ROOT_APP . DS . 'controleur');
 define('ROOT_JS', ROOT_WWW . DS . 'script');
 define('ROOT_CSS',     ROOT_WWW . DS . 'style');
 define('ROOT_IMAGE', ROOT_WWW . DS . 'image');
+
+require(ROOT_FWK.'bootstrap.php');
 ?>
