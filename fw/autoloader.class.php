@@ -20,25 +20,25 @@ class Autoloader {
 
 	// Singleton
 	static private $_instance = null;
-	private function __construct() {echo __METHOD__.PHP_EOL;
-		
+	static private $CONF_FILE = '';
+	private function __construct() {
 		$this->_getCache();
 	}
-	static public function init() {echo __METHOD__.PHP_EOL;
+	static public function init() {
 		if (is_null(self::$_instance)) {
+			self::$CONF_FILE = ROOT_CONFIG . DS . 'autoloader.cache.ini';
 			self::$_instance = new Autoloader();
 		}
 		return self::$_instance;
 	}
 
 	// Cache
-	private function _getCache() {echo __METHOD__.PHP_EOL;
-		$conf_file = ROOT_CONFIG . DS . 'autoloader.ini';
-		if (file_exists($conf_file)) {
-			$conf = parse_ini_file($conf_file, true);
-			if (isset($conf['dossier'])) {
-				foreach ($conf['dossier'] as $k => $v) {
-					$this->_dossiers[$k] = (int)$v;
+	private function _getCache() {
+		if (file_exists(self::$CONF_FILE)) {
+			$conf = parse_ini_file(self::$CONF_FILE, true);
+			if (isset($conf['dossiers'])) {
+				foreach ($conf['dossiers'] as $k => $v) {
+					$this->_dossiers[$k] = intval($v);
 				}
 			}
 			if (isset($conf['classes'])) {
@@ -47,9 +47,8 @@ class Autoloader {
 
 		}
 	}
-	private function _setCache() {echo __METHOD__.PHP_EOL;
-		$conf_file = ROOT_CONFIG . DS . 'autoloader.ini';
-		$fCache = new SplFileObject($conf_file, 'w+');
+	private function _setCache() {
+		$fCache = new SplFileObject(self::$CONF_FILE, 'w+');
 		$fCache->fwrite('[dossiers]' . PHP_EOL . PHP_EOL);
 		foreach ($this->_dossiers as $k => $v) {
 			$fCache->fwrite("$k=$v" . PHP_EOL);
@@ -61,7 +60,7 @@ class Autoloader {
 	}
 
 	// Scan des dossier
-	private function _scanDossier() {echo __METHOD__.PHP_EOL;
+	private function _scanDossier() {
 		foreach ($this->_dossiers as $dossier => $tScan) {
 			_scanFichier($dossier, $tScan);
 		}
@@ -100,7 +99,7 @@ class Autoloader {
 		}
 	}
 
-	public function addDir( /*string*/ $dossier, /*int*/ $typeScan) {echo __METHOD__.PHP_EOL;
+	public function addDir( /*string*/ $dossier, /*int*/ $typeScan) {
 		$NON = 0;
 		$PARTIEL = 1;
 		$TOTAL = 2;
@@ -132,10 +131,11 @@ class Autoloader {
 		} else {
 			throw new AutoloaderException("Le dossier '$dossier' n'existe pas ou n'est pas un dossier!");
 		}
+		return $this;
 	}
 
 	// Loader
-	public function loader($class) {echo __METHOD__.PHP_EOL;
+	public function load($class) {
 		if (!class_exists($class)) {
 			if (!isset($this->_classes[$class])) {
 				$this->_scanDossier();
@@ -146,6 +146,10 @@ class Autoloader {
 			}
 			return false;
 		}
+	}
+	
+	public function start(){
+		spl_autoload_register(array($this, 'load'));
 	}
 
 }
