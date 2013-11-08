@@ -3,14 +3,15 @@
 /**
  * bootstrap
  * Initialisation du framework
+ * @author Fabien SANCHEZ
+ * @version 0.1
  **/
 
-require_one('autoloader.class.php');
-$autoloader = new AutoLoader();
-$autoloader->addDir(ROOT_FWK);
-$autoloader->addDir(ROOT_APP);
-$autoloader->addDir(ROOT_MODEL);
-$autoloader->addDir(ROOT_VUE);
-$autoloader->addDir(ROOT_CONTROLEUR);
+require_once('autoloader.class.php');
+$autoloader = AutoLoader::init();
+$autoloader->addDir(ROOT_FWK, Autoloader::SANS_SOUSDOSSIER);
+$autoloader->addDir(ROOT_MODEL, Autoloader::SANS_SOUSDOSSIER);
+$autoloader->addDir(ROOT_VUE, Autoloader::AVEC_SOUSDOSSIER);
+$autoloader->addDir(ROOT_CONTROLEUR, Autoloader::SANS_SOUSDOSSIER);
 
 ?>
