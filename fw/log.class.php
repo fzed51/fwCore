@@ -29,11 +29,14 @@ class Log {
 	 * @static
 	 * @return void
 	 */
+	 
 	public static function init(array $options) {
 		$default =	array(
 					"niveau"	=> self::WARNING,
 					"fichier"	=> self::_autoFileName()
 					);
+		$option = array_merge($default, $options);
+		
 		// Purge de la trace
 		if (file_exists(self::$fileTrace)) {
 			$dateModif = new DateTime(); // dernière modif
@@ -241,8 +244,6 @@ class Log {
 
 		$enteteOut = "";
 		$maintenant = null;
-		$browscap = new Browscap('./_ini');
-		$userInfo = null;
 		// Initialisation de la trace
 		$maintenant = new DateTime();
 		$enteteOut .= $maintenant->format('\l\e j/m/Y \à H:i:s') . "\n";
@@ -253,7 +254,7 @@ class Log {
             $enteteOut .= "- POSTE      : {$_SERVER['COMPUTERNAME']}\n";
         }
 		try {
-			$userInfo = $browscap->getBrowser(null, true);
+			$userInfo = array();
 			if (isset($userInfo['Platform']))
 				$enteteOut .= "- OS         : {$userInfo['Platform']}\n";
 			if (isset($userInfo['Parent']))
