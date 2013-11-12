@@ -26,7 +26,7 @@ class Autoloader {
 	}
 	static public function init() {
 		if (is_null(self::$_instance)) {
-			self::$CONF_FILE = ROOT_CONFIG . DS . 'autoloader.cache.ini';
+			self::$CONF_FILE = ROOT_CONFIG . 'autoloader.cache.ini';
 			self::$_instance = new Autoloader();
 		}
 		return self::$_instance;
@@ -79,7 +79,7 @@ class Autoloader {
 		foreach ($dir as $item) {
 			if ($item->isFile()) {
 				if (preg_match('/\.class\.php$/', $item->getFilename())) {
-					$this->_scanClass($dossier . DS . $item->getFilename());
+					$this->_scanClass($dossier . $item->getFilename());
 				}
 			}
 		}
