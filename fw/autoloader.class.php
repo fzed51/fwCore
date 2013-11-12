@@ -103,13 +103,14 @@ class Autoloader {
 		$NON = 0;
 		$PARTIEL = 1;
 		$TOTAL = 2;
-
 		$refactor = $NON;
+		$dossier = (substr($dossier, -1))?$dossier:$dossier.DS
 
 		if (is_dir($dossier)) {
 			if (is_readable($dossier)) {
 				if (isset($this->_dossiers[$dossier])) {
 					if ($this->_dossiers[$dossier] != $typeScan) {
+						$this->_dossiers[$dossier] = $typeScan;
 						$refactor = $TOTAL;
 					}
 				} else {
