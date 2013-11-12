@@ -8,7 +8,7 @@
  * fwCore est un framework léger
  * Il a été créer pour comprendre le fonctionnement d'un framework
  * =========================================================================
- * @license  
+ * @license copyright 2013 Fabien SANCHEZ
  **/
 
 // Constantes de chemin
