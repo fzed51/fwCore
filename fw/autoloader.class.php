@@ -27,7 +27,7 @@ class Autoloader {
 	static public function init() {
 		if (is_null(self::$_instance)) {
 			self::$CONF_FILE = ROOT_CONFIG . 'autoloader.cache.ini';
-			self::$_instance = new Autoloader();
+			self::$_instance = new self();
 		}
 		return self::$_instance;
 	}
@@ -39,7 +39,7 @@ class Autoloader {
 			if (isset($conf['dossiers'])) {
 				foreach ($conf['dossiers'] as $k => $v) {
 					$this->_dossiers[$k] = intval($v);
-				}
+                                }
 			}
 			if (isset($conf['classes'])) {
 				$this->_classes = $conf['classes'];
@@ -151,5 +151,5 @@ class Autoloader {
 	public function start(){
 		spl_autoload_register(array($this, 'load'));
 	}
-
+        
 }
