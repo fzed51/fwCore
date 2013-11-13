@@ -44,7 +44,6 @@ class Autoloader {
 			if (isset($conf['classes'])) {
 				$this->_classes = $conf['classes'];
 			}
-
 		}
 	}
 	private function _setCache() {
@@ -104,7 +103,7 @@ class Autoloader {
 		$PARTIEL = 1;
 		$TOTAL = 2;
 		$refactor = $NON;
-		$dossier = (substr($dossier, -1))?$dossier:$dossier.DS
+		$dossier = (substr($dossier, -1))?$dossier:$dossier.DS;
 
 		if (is_dir($dossier)) {
 			if (is_readable($dossier)) {

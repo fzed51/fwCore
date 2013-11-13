@@ -8,7 +8,7 @@ class Auth{
 	}
 
 	// Singleton
-	static private $handle
+	static private $handle;
 	private function __Construct(){
 
 	}
@@ -20,5 +20,3 @@ class Auth{
 	}
 
 }
-
-?>

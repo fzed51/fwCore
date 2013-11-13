@@ -37,4 +37,3 @@ $v = get_defined_vars();
 var_dump($c['user']);
 var_dump($v);
 echo "</pre>";
-?>
