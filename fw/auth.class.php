@@ -1,22 +1,16 @@
 <?php
 
-class Auth{
+class Auth extends Singleton{
 	
-	static private $needed = null;
-	static public function isNeeded(/*bool*/$needed){
-		self::$needed = $needed;
+	private $_levelNeeded;
+	private $_session;
+	
+	public function setLevelNeeded(/*int*/$levelNeeded){
+		$this->_levelNeeded = $levelNeeded;
 	}
 
-	// Singleton
-	static private $handle;
 	private function __Construct(){
-
+		$this->_levelNeeded = 1;
+		$this->_session = Session::getInstance();
 	}
-	static public function init(){
-		if(is_null(self::$handle)){
-			self::$handle = new Auth();
-		}
-		return self::$handle;
-	}
-
 }
