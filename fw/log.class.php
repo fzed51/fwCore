@@ -39,14 +39,14 @@ class Log {
 		
 		// Purge de la trace
 		if (file_exists(self::$fileTrace)) {
-			$dateModif = new DateTime(); // dernière modif
+			$dateModif = new DateTime(); // derniï¿½re modif
 			$dateModif->setTimestamp(filemtime(self::$fileTrace));
 			$maintenant = new DateTime(); // maintenant
-			$inter = $maintenant->diff($dateModif); // délais depuis la modif
+			$inter = $maintenant->diff($dateModif); // dï¿½lais depuis la modif
 			$interMinute = ($inter->days * 24 + $inter->h) * 60 + $inter->i; // convertion en minute
 			settype($interMinute, 'integer');
 			if ($interMinute > 2)
-				unlink(self::$fileTrace); // Suppression si le fichier a été modifié  il y a + de 2 minutes
+				unlink(self::$fileTrace); // Suppression si le fichier a ï¿½tï¿½ modifiï¿½  il y a + de 2 minutes
 		}
 	}
 
@@ -59,7 +59,7 @@ class Log {
 	 */
 	public static function traceFonction() {
 
-		// Déclaration des variables locales
+		// Dï¿½claration des variables locales
 		$backtrace = debug_backtrace();
 		$fonctionTest = $backtrace[1];
 		$fonctionParent = "";
@@ -72,17 +72,17 @@ class Log {
 		$out = "";
 		$fileOut = "";
 
-		// Détermination du fichier / ligne
+		// Dï¿½termination du fichier / ligne
 		if (isset($fonctionTest['file']) && isset($fonctionTest['line'])) {
 			$fichier = pathinfo($fonctionTest['file'], PATHINFO_BASENAME) . '[' . $fonctionTest['line'] . ']';
 		} else {
 			$fichier = '';
 		}
 
-		// Détermination des arguments
+		// Dï¿½termination des arguments
 		$arguments = self::parametre($fonctionTest['args']);
 
-		// Détermination de la fonction
+		// Dï¿½termination de la fonction
 		if (isset($fonctionTest['class']) && $fonctionTest['class'] != '') {
 			$class = $fonctionTest['class'] . ':';
 		} else {
@@ -90,11 +90,11 @@ class Log {
 		}
 		$fonction = $class . $fonctionTest['function'] . '(' . $arguments . ')';
 
-		// Détermination de l'utilisation de la mémoire
+		// Dï¿½termination de l'utilisation de la mï¿½moire
 		$memoire = '[' . self::octeLisible(memory_get_usage()) . '/' . self::octeLisible(memory_get_peak_usage
 			()) . ']';
 
-		// Détermination de la fonction parent (fichier / function)
+		// Dï¿½termination de la fonction parent (fichier / function)
 		if (isset($backtrace[2])) {
 			$fonctionParent = $backtrace[2];
 			if (isset($fonctionParent['class']) && $fonctionParent['class'] != '') {
@@ -135,13 +135,13 @@ class Log {
 		$unit = 0;
 		$retour = $octe;
 
-		// Réduction à l'unité la plus importante
+		// Rï¿½duction ï¿½ l'unitï¿½ la plus importante
 		while ($retour > 1024 && $unit < (count($lstUnit) - 1)) {
 			$retour = $retour / 1024;
 			$unit++;
 		}
 
-		// Affichage arrondi au millième
+		// Affichage arrondi au milliï¿½me
 		return round($retour, 3) . $lstUnit[$unit];
 	}
 
@@ -216,7 +216,7 @@ class Log {
 	 * MyDebug::generateurID()
 	 * 
 	 * @static
-	 * @access privé
+	 * @access privï¿½
 	 * @param entier	$long longueur de l'ID
 	 * @return chaine	ID
 	 */
@@ -237,7 +237,7 @@ class Log {
 	 * MyDebug::entete()
 	 * 
 	 * @static
-	 * @access privé
+	 * @access privï¿½
 	 * @return chaine
 	 */
 	private static function entete() {
@@ -246,7 +246,7 @@ class Log {
 		$maintenant = null;
 		// Initialisation de la trace
 		$maintenant = new DateTime();
-		$enteteOut .= $maintenant->format('\l\e j/m/Y \à H:i:s') . "\n";
+		$enteteOut .= $maintenant->format('\l\e j/m/Y \ï¿½ H:i:s') . "\n";
 		$enteteOut .= "Utilisateur \n";
 		if (isset($_SERVER['REMOTE_ADDR'])){
 			$enteteOut .= "- IP         : {$_SERVER['REMOTE_ADDR']}\n";
@@ -324,9 +324,9 @@ class Log {
 	 * MyDebug::encadre()
 	 * 
 	 * @static
-	 * @access privé
+	 * @access privï¿½
 	 * @param chaine $msg
-	 * @param chaine(8) $cadre commence par le coin haut gauche, tourne dans le sens des aiguille d'une montre et fini par le coté gauche
+	 * @param chaine(8) $cadre commence par le coin haut gauche, tourne dans le sens des aiguille d'une montre et fini par le cotï¿½ gauche
 	 * @return chaine
 	 */
 	private static function encadre($msg, $cadre = '+-+|+-+|') {
@@ -363,7 +363,7 @@ class Log {
 	 * MyDebug::ajouteIdDebutLigne()
 	 * 
 	 * @static
-	 * @access privé
+	 * @access privï¿½
 	 * @param chaine $id
 	 * @param chaine $msg
 	 * @return chaine
@@ -387,7 +387,7 @@ class Log {
 	 * MyDebug::listeVarGlob()
 	 * 
 	 * @static
-	 * @access privé
+	 * @access privï¿½
 	 * @param tableau $tableau
 	 * @param entier $format -1 auto, 0 long, 1 moyen, 2 court
 	 * @return
@@ -410,7 +410,7 @@ class Log {
 					$$out .= ',';
 			}
 
-			// clé
+			// clï¿½
 			foreach ($lstOut as $out) {
 				$$out .= "[$cle]";
 			}
@@ -447,11 +447,11 @@ class Log {
 	 * MyDebug::getModeDebug()
 	 * 
 	 * @static
-	 * @access privé
+	 * @access privï¿½
 	 * @return boolean
 	 */
 	private static function getModeDebug() {
-		// Détection de l'initialisation de la variable $modeDebug
+		// Dï¿½tection de l'initialisation de la variable $modeDebug
 		if (is_null(self::$modeDebug)) {
 			// initialisation de $modeDebug avec INI_FILE
 			if (!$settings = parse_ini_file(INI_FILE, true))
@@ -487,5 +487,3 @@ class Log {
     }
     
 }
-
-?>
