@@ -34,10 +34,4 @@ define('WEB_IMAGE',  WEB_ROOT . 'image' . WS);
 
 define('ROOT_CONFIG', ROOT_FWK . 'config' . DS);
 
-echo "<pre>";
 require(ROOT_FWK.'bootstrap.php');
-$c = get_defined_constants(true);
-$v = get_defined_vars();
-var_dump($c['user']);
-var_dump($v);
-echo "</pre>";

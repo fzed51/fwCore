@@ -14,3 +14,5 @@ $autoloader->addDir(ROOT_FWK, Autoloader::SANS_SOUSDOSSIER)
 	->addDir(ROOT_VUE, Autoloader::AVEC_SOUSDOSSIER)
 	->addDir(ROOT_CONTROLEUR, Autoloader::SANS_SOUSDOSSIER)
 	->start();
+
+require ROOT_VUE.'index.php';
