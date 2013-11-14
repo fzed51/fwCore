@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+	<!-- Favicon
 	<meta name="msapplication-TileColor" content="#D83434">
 	<meta name="msapplication-TileImage" content="path/to/tileicon.png">
-    <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png" type="image/png">
+	<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png" type="image/png">
 	<link rel="icon" href="../../docs-assets/ico/favicon.png" type="image/png">
 	<link href="/apple-touch-icon-precomposed.png" rel="apple-touch-icon-precomposed">
 	<link href="/apple-touch-icon-72x72-precomposed.png" rel="apple-touch-icon-precomposed" sizes="72x72">
 	<link href="/apple-touch-icon-114x114-precomposed.png" rel="apple-touch-icon-precomposed" sizes="114x114">
 	<link href="/apple-touch-icon-144x144-precomposed.png" rel="apple-touch-icon-precomposed" sizes="144x144">
+	-->
 	<!--[if IE]><link rel="shortcut icon" href="path/to/favicon.ico"><![endif]-->
 	<!-- or, set /favicon.ico for IE10 win -->
 	
