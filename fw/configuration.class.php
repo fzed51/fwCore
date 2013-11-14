@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Classe de gestion des paramètres de configuration.
  * Inspirée du SimpleFramework de Frédéric Guillot
@@ -53,6 +52,4 @@ class Configuration
         }
         return self::$parametres;
     }
-
 }
-?>

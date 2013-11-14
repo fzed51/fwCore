@@ -1,6 +1,6 @@
 <?php
 
-class Auth extends Singleton{
+class Auth {
 	
 	private $_levelNeeded;
 	private $_session;
@@ -8,7 +8,7 @@ class Auth extends Singleton{
 	private $_level;
 	private $_ipAdresse;
 	
-	private function __Construct(){
+	protected function __Construct(){
 		$this->_levelNeeded = 1;
 		$this->_session = Session::getInstance();
 		$this->_data = array();
@@ -23,6 +23,13 @@ class Auth extends Singleton{
 			}
 		}
 	}
+	static private $_instance;
+    static public function getInstance() {
+        if(true === is_null(self::$_instance)){
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
 	
 	public function setLevelNeeded(/*int*/$levelNeeded){
 		$this->_levelNeeded = $levelNeeded;

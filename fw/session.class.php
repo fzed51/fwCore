@@ -4,11 +4,18 @@
  *
  * @author fabien.sanchez
  */ 
-class Session extends singleton implements ArrayAccess, Countable{
+class Session implements ArrayAccess, Countable{
 
-	private function __Construct(){
+	protected function __Construct(){
 		session_start();
 	}
+	static private $_instance;
+    static public function getInstance() {
+        if(true === is_null(self::$_instance)){
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
 	public function offsetExists ($index) {
 		return isset($_SESSION[$index]);
 	}
