@@ -17,16 +17,16 @@ class Autoloader {
 
 	private $_dossiers = array();
 	private $_classes = array();
+	private $_CONF_FILE = '';
 
 	// Singleton
 	static private $_instance = null;
-	static private $CONF_FILE = '';
 	private function __construct() {
+		$this->_CONF_FILE = ROOT_CONFIG . 'autoloader.cache.ini';
 		$this->_getCache();
 	}
-	static public function init() {
+	static public function getInstance() {
 		if (is_null(self::$_instance)) {
-			self::$CONF_FILE = ROOT_CONFIG . 'autoloader.cache.ini';
 			self::$_instance = new self();
 		}
 		return self::$_instance;
@@ -34,12 +34,12 @@ class Autoloader {
 
 	// Cache
 	private function _getCache() {
-		if (file_exists(self::$CONF_FILE)) {
-			$conf = parse_ini_file(self::$CONF_FILE, true);
+		if (file_exists($this->_CONF_FILE)) {
+			$conf = parse_ini_file($this->_CONF_FILE, true);
 			if (isset($conf['dossiers'])) {
 				foreach ($conf['dossiers'] as $k => $v) {
 					$this->_dossiers[$k] = intval($v);
-                                }
+				}
 			}
 			if (isset($conf['classes'])) {
 				$this->_classes = $conf['classes'];
@@ -47,7 +47,7 @@ class Autoloader {
 		}
 	}
 	private function _setCache() {
-		$fCache = new SplFileObject(self::$CONF_FILE, 'w+');
+		$fCache = new SplFileObject($this->_CONF_FILE, 'w+');
 		$fCache->fwrite('[dossiers]' . PHP_EOL . PHP_EOL);
 		foreach ($this->_dossiers as $k => $v) {
 			$fCache->fwrite("$k=$v" . PHP_EOL);
@@ -61,11 +61,11 @@ class Autoloader {
 	// Scan des dossier
 	private function _scanDossier() {
 		foreach ($this->_dossiers as $dossier => $tScan) {
-			_scanFichier($dossier, $tScan);
+			$this->_scanFichier($dossier, $tScan);
 		}
 		$this->_setCache();
 	}
-	private function _scanFichier( /*string*/ $dossier, /*int*/ $typeScan = self::SANS_SOUSDOSSIER) {echo __METHOD__.PHP_EOL;
+	private function _scanFichier( /*string*/ $dossier, /*int*/ $typeScan = self::SANS_SOUSDOSSIER) {
 		switch ($typeScan) {
 			case self::AVEC_SOUSDOSSIER:
 				$dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dossier));
@@ -83,7 +83,7 @@ class Autoloader {
 			}
 		}
 	}
-	private function _scanClass( /*string*/ $fichier) {echo __METHOD__.PHP_EOL;
+	private function _scanClass( /*string*/ $fichier) {
 		$tokens = token_get_all(file_get_contents($fichier, false));
 		$tokens = array_filter($tokens, 'is_array');
 
@@ -137,12 +137,14 @@ class Autoloader {
 	// Loader
 	public function load($class) {
 		if (!class_exists($class)) {
-			if (!isset($this->_classes[$class])) {
+			if (!isset($this->_classes[strtolower($class)])) {
 				$this->_scanDossier();
 			}
-			if (isset($this->_classes[$class])) {
-				require ($this->_classes[$class]);
+			if (isset($this->_classes[strtolower($class)])) {
+				require ($this->_classes[strtolower($class)]);
 				return true;
+			} else {
+				throw new AutoloaderException("La class &lt;$class&gt; ne peut pas être chargée! ");
 			}
 			return false;
 		}
