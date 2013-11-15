@@ -24,12 +24,12 @@ class Auth {
 		}
 	}
 	static private $_instance;
-    static public function getInstance() {
-        if(true === is_null(self::$_instance)){
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
+		static public function getInstance() {
+		if(true === is_null(self::$_instance)){
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
 	
 	public function setLevelNeeded(/*int*/$levelNeeded){
 		$this->_levelNeeded = $levelNeeded;
