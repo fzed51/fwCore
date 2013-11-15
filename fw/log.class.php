@@ -6,23 +6,27 @@
  * @version 1.2
  */
  
- //TODO: appliquer le pattern Singleton
- //TODO: revoir les fonctions
- 
-
 class Log {
 
 	// Fichier de sortie
-	private static $fileTrace = "./log.txt";
-	private static $id = null;
+	static private $_fileTrace;
+	static private $_niveau;
+	static private $id = null;
 	
 	// Constante
 	const DEBUGFIN = 1;
 	const DEBUG = 2;
-	const LOG = 4;
+	const NOTICE = 4;
 	const WARNING = 8;
 	const ERROR = 16;	
-
+	static public $DIC_NIV = array (
+		1 => 'DEBUGFIN',
+		2 => 'DEBUG',
+		4 => 'NOTICE',
+		8 => 'WARNING',
+		16=> 'ERROR'
+	);
+	
 	/**
 	 * MyDebug::init()
 	 * 
@@ -30,23 +34,24 @@ class Log {
 	 * @return void
 	 */
 	 
-	public static function init(array $options) {
+	static public function init(array $options) {
 		$default =	array(
-					"niveau"	=> self::WARNING,
-					"fichier"	=> self::_autoFileName()
+						"niveau"	=> self::WARNING,
+						"fichier"	=> self::_autoFileName()
 					);
 		$option = array_merge($default, $options);
-		
 		// Purge de la trace
-		if (file_exists(self::$fileTrace)) {
-			$dateModif = new DateTime(); // derni�re modif
-			$dateModif->setTimestamp(filemtime(self::$fileTrace));
+		if (file_exists(self::$_fileTrace)) {
+			$dateModif = new DateTime(); // dernière modif
+			$dateModif->setTimestamp(filemtime(self::$_fileTrace));
 			$maintenant = new DateTime(); // maintenant
 			$inter = $maintenant->diff($dateModif); // d�lais depuis la modif
 			$interMinute = ($inter->days * 24 + $inter->h) * 60 + $inter->i; // convertion en minute
 			settype($interMinute, 'integer');
-			if ($interMinute > 2)
-				unlink(self::$fileTrace); // Suppression si le fichier a �t� modifi�  il y a + de 2 minutes
+			// Suppression si le fichier a été modifié  il y a + de 2 minutes
+			if ($interMinute > 2){
+				unlink(self::$_fileTrace);
+			}
 		}
 	}
 
@@ -57,58 +62,52 @@ class Log {
 	 * @access public
 	 * @return void
 	 */
-	public static function traceFonction() {
-
-		// D�claration des variables locales
-		$backtrace = debug_backtrace();
-		$fonctionTest = $backtrace[1];
-		$fonctionParent = "";
-		$fonction = "";
-		$fonctionMere = "";
-		$fichier = "";
-		$class = "";
-		$classParent = "";
-		$arguments = "";
-		$out = "";
-		$fileOut = "";
-
-		// D�termination du fichier / ligne
-		if (isset($fonctionTest['file']) && isset($fonctionTest['line'])) {
-			$fichier = pathinfo($fonctionTest['file'], PATHINFO_BASENAME) . '[' . $fonctionTest['line'] . ']';
-		} else {
-			$fichier = '';
-		}
-
-		// D�termination des arguments
-		$arguments = self::parametre($fonctionTest['args']);
-
-		// D�termination de la fonction
-		if (isset($fonctionTest['class']) && $fonctionTest['class'] != '') {
-			$class = $fonctionTest['class'] . ':';
-		} else {
-			$class = '';
-		}
-		$fonction = $class . $fonctionTest['function'] . '(' . $arguments . ')';
-
-		// D�termination de l'utilisation de la m�moire
-		$memoire = '[' . self::octeLisible(memory_get_usage()) . '/' . self::octeLisible(memory_get_peak_usage
-			()) . ']';
-
-		// D�termination de la fonction parent (fichier / function)
-		if (isset($backtrace[2])) {
-			$fonctionParent = $backtrace[2];
-			if (isset($fonctionParent['class']) && $fonctionParent['class'] != '') {
-				$classParent = $fonctionParent['class'] . ':';
+	static public function traceFonction() {
+			// D�claration des variables locales
+			$backtrace = debug_backtrace();
+			$fonctionTest = $backtrace[1];
+			$fonctionParent = "";
+			$fonction = "";
+			$fonctionMere = "";
+			$fichier = "";
+			$class = "";
+			$classParent = "";
+			$arguments = "";
+			$out = "";
+			$fileOut = "";
+			// D�termination du fichier / ligne
+			if (isset($fonctionTest['file']) && isset($fonctionTest['line'])) {
+				$fichier = pathinfo($fonctionTest['file'], PATHINFO_BASENAME) . '[' . $fonctionTest['line'] . ']';
 			} else {
-				$classParent = '';
+				$fichier = '';
 			}
-			$fonctionMere = $classParent . $fonctionParent['function'] . '()';
-			$out = "{$fichier}> {$fonctionMere}> {$fonction}  {$memoire}\n";
-		} else {
-			$out = "{$fichier}> {$fonction}  {$memoire}\n";
-		}
+			// D�termination des arguments
+			$arguments = self::parametre($fonctionTest['args']);
 
-		self::trace($out);
+			// D�termination de la fonction
+			if (isset($fonctionTest['class']) && $fonctionTest['class'] != '') {
+				$class = $fonctionTest['class'] . ':';
+			} else {
+				$class = '';
+			}
+			$fonction = $class . $fonctionTest['function'] . '(' . $arguments . ')';
+			// D�termination de l'utilisation de la m�moire
+			$memoire = '[' . self::octeLisible(memory_get_usage()) . '/' . self::octeLisible(memory_get_peak_usage
+				()) . ']';
+			// D�termination de la fonction parent (fichier / function)
+			if (isset($backtrace[2])) {
+				$fonctionParent = $backtrace[2];
+				if (isset($fonctionParent['class']) && $fonctionParent['class'] != '') {
+					$classParent = $fonctionParent['class'] . ':';
+				} else {
+					$classParent = '';
+				}
+				$fonctionMere = $classParent . $fonctionParent['function'] . '()';
+				$out = "{$fichier}> {$fonctionMere}> {$fonction}  {$memoire}\n";
+			} else {
+				$out = "{$fichier}> {$fonction}  {$memoire}\n";
+			}
+			self::trace($out);
 	}
 
 	/**
@@ -120,7 +119,6 @@ class Log {
 	 * @return chaine
 	 */
 	public static function octeLisible($octe) {
-
 		// Initialisation des variables locales
 		$lstUnit = array(
 			'o',
@@ -134,13 +132,11 @@ class Log {
 			'Yo');
 		$unit = 0;
 		$retour = $octe;
-
-		// R�duction � l'unit� la plus importante
+		// Réduction à l'unité la plus importante
 		while ($retour > 1024 && $unit < (count($lstUnit) - 1)) {
 			$retour = $retour / 1024;
 			$unit++;
 		}
-
 		// Affichage arrondi au milli�me
 		return round($retour, 3) . $lstUnit[$unit];
 	}
@@ -223,11 +219,9 @@ class Log {
 	private static function generateurID($long = 5) {
 		$id = '';
 		$code = 0;
-
 		for ($i = 0; $i < $long; $i++) {
 			$code = 65 + rand(0, 51);
-			if ($code > 90)
-				$code += 6;
+			if ($code > 90) { $code += 6; }
 			$id .= chr($code); // $code = [a-zA-Z]
 		}
 		return $id;
@@ -237,16 +231,14 @@ class Log {
 	 * MyDebug::entete()
 	 * 
 	 * @static
-	 * @access priv�
-	 * @return chaine
+	 * @access privé
+	 * @return string
 	 */
 	private static function entete() {
-
 		$enteteOut = "";
-		$maintenant = null;
-		// Initialisation de la trace
 		$maintenant = new DateTime();
-		$enteteOut .= $maintenant->format('\l\e j/m/Y \� H:i:s') . "\n";
+		
+		$enteteOut .= $maintenant->format('\l\e j/m/Y \à H:i:s') . "\n";
 		$enteteOut .= "Utilisateur \n";
 		if (isset($_SERVER['REMOTE_ADDR'])){
 			$enteteOut .= "- IP         : {$_SERVER['REMOTE_ADDR']}\n";
@@ -303,7 +295,7 @@ class Log {
 	public static function trace($msg) {
 		$msgOut = '';
 		if (self::getModeDebug() == true) {
-			$fileOut = fopen(self::$fileTrace, 'a');
+			$fileOut = fopen(self::$_fileTrace, 'a');
 			if ($fileOut !== false) {
 				if (self::$init !== true) {
 					self::$ID = self::generateurID(2);
@@ -447,37 +439,32 @@ class Log {
 	 * MyDebug::getModeDebug()
 	 * 
 	 * @static
-	 * @access priv�
+	 * @access privé
 	 * @return boolean
 	 */
 	private static function getModeDebug() {
 		// D�tection de l'initialisation de la variable $modeDebug
 		if (is_null(self::$modeDebug)) {
 			// initialisation de $modeDebug avec INI_FILE
-			if (!$settings = parse_ini_file(INI_FILE, true))
+			if (!$settings = parse_ini_file(INI_FILE, true)){
 				throw new exception("Impossible d'ouvrir '$file'");
-
+			}
 			if ($settings['ModeDebug']['actif'] == 1) {
 				self::$modeDebug = true;
 			} else {
 				self::$modeDebug = false;
 			}
-
 		}
-
 		return self::$modeDebug;
 	}
     
     public static function traceVar(/*mixed*/ $var, /*string*/ $name = null){
         
         $trace = '';
-        
         if(isset($name)){
             $trace .= "$name = ";
         }
-        
         $trace .= print_r($var, true);
-        
         self::trace($trace);
         
     }
