@@ -2,7 +2,7 @@
 /**
  * fwCore
  * @author Fabien SANCHEZ
- * @version 0.2.1
+ * @version 0.3.1
  * @license copyright 2013 Fabien SANCHEZ
  * ==========================================================================
  * fwCore est un framework léger
