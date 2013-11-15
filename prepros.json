@@ -1,0 +1,52 @@
+{
+  "id": "532da34d",
+  "name": "fwCore",
+  "files": [
+    {
+      "id": "2e8f9ea2",
+      "pid": "532da34d",
+      "name": "README.md",
+      "type": "MD",
+      "input": "README.md",
+      "output": "README.html",
+      "config": {
+        "autoCompile": true,
+        "sanitize": false,
+        "gfm": true
+      }
+    },
+    {
+      "id": "e5668182",
+      "pid": "532da34d",
+      "name": "bootstrap.js",
+      "type": "JS",
+      "input": "www_root\\script\\bootstrap.js",
+      "output": "www_root\\script\\{{jsMinPath}}\\bootstrap.min.js",
+      "config": {
+        "autoCompile": true,
+        "uglify": true,
+        "mangle": true
+      }
+    }
+  ],
+  "imports": [],
+  "config": {
+    "liveRefresh": true,
+    "liveRefreshDelay": "10",
+    "filterPatterns": "",
+    "useCustomServer": true,
+    "customServerUrl": "http://localhost/fwCore/",
+    "cssPath": "style",
+    "jsPath": "script",
+    "htmlPath": "",
+    "jsMinPath": "",
+    "autoprefixerBrowsers": "",
+    "ftpHost": "",
+    "ftpPort": "21",
+    "ftpRemotePath": "",
+    "ftpIgnorePreprocessorFiles": true,
+    "ftpExcludePatterns": "",
+    "ftpPassword": "",
+    "ftpUsername": ""
+  }
+}
