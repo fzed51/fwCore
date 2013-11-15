@@ -15,4 +15,8 @@ class Routeur {
     static public function erreur404 ($message = ''){
         header('location:');
     }
+	
+	static public function erreur500 ($message = ''){
+        header('location:');
+    }
 }
