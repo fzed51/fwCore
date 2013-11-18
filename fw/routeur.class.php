@@ -2,7 +2,6 @@
 
 /**
  * Description of Routeur
- *
  * @author Sandrine
  */
 
@@ -18,11 +17,10 @@ class Routeur {
 	public function route(Requette $requette){
 		$ctrlNom = $requette->getControl();
 		$class_name = ucfirst(strtolower($ctrlNom))+'Controleur';
-		$action = $requette->getAction();
-		$action = ucfirst(strtolower($action));
+		$action = ucfirst(strtolower($requette->getAction()));
 		if(class_exists($class_name, true)){
 			$controleur = new $class_name();
-			$controleur->executeAction($actio, $requette);
+			$controleur->executeAction($action, $requette);
 		} else {
 			throw new RuntimeException("Le controleur '$ctrlNom' n'existe pas! ");
 		}
