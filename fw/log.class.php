@@ -69,32 +69,23 @@ class Log {
 	}
 	
 	public static function trace($niveau, $message) {
-		$msgOut = '';
 		if (self::$_config['niveau'] <= $niveau) {
 			if (self::$_init !== true) {
 				self::init();
 			}
+			$msgOut = '';
 			if (self::$_entete !== true){
-				$msgOut .= self::entete();
+				$msgOut .= self::_entete();
 			}
-			$msgOut .= self::ajouteIdDebutLigne(self::$_id, $message);
-			$msgOut = trim($msgOut);
-			$msgOut .= "\n";
+			$msgOut .= self::_ajouteIdDebutLigne(self::$_id, $message);
 			$fileOut = fopen(self::$_config['fichier'], 'a');
 			if ($fileOut !== false) {
-				fwrite($fileOut, $msgOut);
+				fwrite($fileOut, trim($msgOut) . PHP_EOL);
 				fclose($fileOut);
 			}
 		}
 	}
 	
-	/**
-	 * MyDebug::traceFonction()
-	 * 
-	 * @static
-	 * @access public
-	 * @return void
-	 */
 	static public function traceFonction() {
 		// Déclaration des variables locales
 		$backtrace = debug_backtrace();
@@ -115,7 +106,7 @@ class Log {
 			$fichier = '';
 		}
 		// Détermination des arguments
-		$arguments = self::parametre($fonctionTest['args']);
+		$arguments = self::_parametre($fonctionTest['args']);
 			// Détermination de la fonction
 		if (isset($fonctionTest['class']) && $fonctionTest['class'] != '') {
 			$class = $fonctionTest['class'] . ':';
@@ -124,7 +115,7 @@ class Log {
 		}
 		$fonction = $class . $fonctionTest['function'] . '(' . $arguments . ')';
 		// Détermination de l'utilisation de la mémoire
-		$memoire = '[' . self::octeLisible(memory_get_usage()) . '/' . self::octeLisible(memory_get_peak_usage
+		$memoire = '[' . self::_octeLisible(memory_get_usage()) . '/' . self::_octeLisible(memory_get_peak_usage
 			()) . ']';
 		// Détermination de la fonction parent (fichier / function)
 		if (isset($backtrace[2])) {
@@ -141,16 +132,8 @@ class Log {
 		}
 		self::trace(self::DEBUGFIN, $out);
 	}
-
-	/**
-	 * MyDebug::octeLisible()
-	 * 
-	 * @static
-	 * @access public
-	 * @param entier $octe
-	 * @return chaine
-	 */
-	public static function octeLisible($octe) {
+	
+	static private function _octeLisible($octe) {
 		// Initialisation des variables locales
 		$lstUnit = array(
 			'o',
@@ -172,16 +155,8 @@ class Log {
 		// Affichage arrondi au milli�me
 		return round($retour, 3) . $lstUnit[$unit];
 	}
-
-	/**
-	 * MyDebug::parametre()
-	 * 
-	 * @static
-	 * @access public
-	 * @param tableau/mix $lstArgs
-	 * @return chaine
-	 */
-	public static function parametre($lstArgs) {
+	
+	static private function _parametre($lstArgs) {
 
 		$out = "";
 		$longChaine = 25; // longueur max des string
@@ -239,20 +214,14 @@ class Log {
 
 		return $out;
 	}
-
-	/**
-	 * MyDebug::entete()
-	 * 
-	 * @static
-	 * @access privé
-	 * @return string
-	 */
-	private static function entete() {
-		$enteteOut = "";
+	
+	static private function _entete() {
+		if(self::$_config['niveau'] <= self::WARNING){
+			return '';
+		}
 		$maintenant = new DateTime();
-		
-		$enteteOut .= $maintenant->format('\l\e j/m/Y \à H:i:s') . "\n";
-		$enteteOut .= "Utilisateur \n";
+		$enteteOut = $maintenant->format('\l\e j/m/Y \à H:i:s') . "\n"
+			. "Utilisateur \n";
 		if (isset($_SERVER['REMOTE_ADDR'])){
 			$enteteOut .= "- IP         : {$_SERVER['REMOTE_ADDR']}\n";
         }elseif(isset($_SERVER['COMPUTERNAME'])){
@@ -260,94 +229,69 @@ class Log {
         }
 		try {
 			$userInfo = array();
-			if (isset($userInfo['Platform']))
-				$enteteOut .= "- OS         : {$userInfo['Platform']}\n";
-			if (isset($userInfo['Parent']))
-				$enteteOut .= "- navigateur : {$userInfo['Parent']}\n";
+			if (isset($userInfo['Platform'])){
+				$enteteOut .= "- OS         : {$userInfo['Platform']}\n";}
+			if (isset($userInfo['Parent'])){
+				$enteteOut .= "- navigateur : {$userInfo['Parent']}\n";}
 		}
-		catch (exception $excep) {
+		catch (Exception $e) {
 			$enteteOut .= "- info navigateur innaccessible!";
 		}
-		if (isset($_SERVER['SCRIPT_NAME']))
+		if (isset($_SERVER['SCRIPT_NAME'])){
 			$enteteOut .= $_SERVER['SCRIPT_NAME'] . "\n";
-		if (isset($_POST) && count($_POST) > 0) {
-			$enteteOut .= "- [POST]";
-			$enteteOut .= " -> " . self::listeVarGlob($_POST);
-			$enteteOut .= "\n";
 		}
-		if (isset($_GET) && count($_GET) > 0) {
-			$enteteOut .= "- [GET]";
-			$enteteOut .= " -> " . self::listeVarGlob($_GET);
-			$enteteOut .= "\n";
+		if(self::$_config['niveau'] <= self::DEBUG){
+			if (isset($_POST) && count($_POST) > 0) {
+				$enteteOut .= "- [POST]" . " -> " . self::_listeVarGlob($_POST) 
+						. "\n";
+			}
+			if (isset($_GET) && count($_GET) > 0) {
+				$enteteOut .= "- [GET]" . " -> " . self::_listeVarGlob($_GET) 
+						. "\n";
+			}
+			if (isset($_COOKIE) && count($_COOKIE) > 0) {
+				$enteteOut .= "- [COOKIE]" . " -> " 
+						. self::_listeVarGlob($_COOKIE) . "\n";
+			}
+			if (isset($_FILES) && count($_FILES) > 0) {
+				$enteteOut .= "- [FILES]" . " -> " . $_FILES['name'] . '(' 
+						. self::_octeLisible($_FILES['size']) . ')' . "\n";
+			}
 		}
-		if (isset($_FILES) && count($_COOKIE) > 0) {
-			$enteteOut .= "- [COOKIE]";
-			$enteteOut .= " -> " . self::listeVarGlob($_COOKIE);
-			$enteteOut .= "\n";
-		}
-		if (isset($_FILES) && count($_FILES) > 0) {
-			$enteteOut .= "- [FILES]";
-			$enteteOut .= " -> " . $_FILES['name'] . '(' . self::octeLisible($_FILES['size']) . ')';
-			$enteteOut .= "\n";
-		}
-
-		$enteteOut = self::encadre($enteteOut);
-		$enteteOut = "\n" . self::ajouteIdDebutLigne(self::$ID, $enteteOut) . "\n\n";
-
+		$enteteOut = self::_encadre($enteteOut);
+		$enteteOut = "\n" 
+				. trim(self::_ajouteIdDebutLigne(self::$ID, $enteteOut)) 
+				. "\n\n";
 		return $enteteOut;
 	}
-
-
-
-	/**
-	 * MyDebug::encadre()
-	 * 
-	 * @static
-	 * @access privé
-	 * @param chaine $msg
-	 * @param chaine(8) $cadre commence par le coin haut gauche, tourne dans le sens des aiguille d'une montre et fini par le cot� gauche
-	 * @return chaine
-	 */
-	private static function encadre($msg, $cadre = '+-+|+-+|') {
+	
+	static private function _encadre($msg, $cadre = '+-+|+-+|') {
 		$msgOut = '';
-		$msg = trim($msg);
+		$msg = str_replace("\t", "  ", trim($msg));
 		$lignes = explode("\n", $msg);
 		$nbLigne = count($lignes);
 		$longMax = 0;
-		for ($i = 0; $i < $nbLigne; $i++)
-			if (strlen($lignes[$i]) > $longMax)
+		for ($i = 0; $i < $nbLigne; $i++){
+			if (strlen($lignes[$i]) > $longMax){
 				$longMax = strlen($lignes[$i]);
+			}
+		}
 		// ligne du haut
-		$msgOut = $cadre[0];
-		for ($i = 0; $i < ($longMax + 4); $i++)
-			$msgOut .= $cadre[1];
-		$msgOut .= $cadre[2] . "\n";
+		$msgOut = $cadre[0] . str_repeat($cadre[1],$longMax + 4) . $cadre[2] 
+				. PHP_EOL;
 		// autre ligne
 		for ($i = 0; $i < $nbLigne; $i++) {
-			$msgOut .= $cadre[7] . '  ';
-			$msgOut .= $lignes[$i];
-			for ($j = strlen($lignes[$i]); $j < $longMax; $j++)
-				$msgOut .= ' ';
-			$msgOut .= '  ' . $cadre[3] . "\n";
+			$msgOut .= $cadre[7] . '  ' . $lignes[$i] 
+					. str_repeat(' ', $longMax - strlen($lignes[$i])) . '  ' 
+					. $cadre[3] . PHP_EOL;
 		}
 		// ligne du bas
-		$msgOut .= $cadre[4];
-		for ($i = 0; $i < ($longMax + 4); $i++)
-			$msgOut .= $cadre[5];
-		$msgOut .= $cadre[6];
+		$msgOut = $cadre[4] . str_repeat($cadre[5],$longMax + 4) . $cadre[6] 
+				. PHP_EOL;
 		return $msgOut;
 	}
-
-	/**
-	 * MyDebug::ajouteIdDebutLigne()
-	 * 
-	 * @static
-	 * @access priv�
-	 * @param chaine $id
-	 * @param chaine $msg
-	 * @return chaine
-	 */
-	private static function ajouteIdDebutLigne($Id, $msg) {
+	
+	static private function _ajouteIdDebutLigne($Id, $msg) {
 		$msgOut = '';
 		$separateur = ' - ';
 		$separateur2 = ' \ ';
@@ -361,17 +305,8 @@ class Log {
 		}
 		return trim($msgOut);
 	}
-
-	/**
-	 * MyDebug::listeVarGlob()
-	 * 
-	 * @static
-	 * @access privé
-	 * @param tableau $tableau
-	 * @param entier $format -1 auto, 0 long, 1 moyen, 2 court
-	 * @return
-	 */
-	private static function listeVarGlob($tableau, $format = -1) {
+	
+	static private function _listeVarGlob($tableau, $format = -1) {
 
 		$outLong = '';
 		$outMoy = '';
@@ -380,7 +315,6 @@ class Log {
 			'outLong',
 			'outMoy',
 			'outCourt');
-		$type = '';
 
 		foreach ($tableau as $cle => $val) {
 			// virgule
@@ -407,22 +341,18 @@ class Log {
 			}
 
 			if ($format == -1) {
-				if (strlen($outLong) < 70)
-					return $outLong;
-				if (strlen($outMoy) < 70)
-					return $outMoy;
+				if (strlen($outLong) < 70) return $outLong;
+				if (strlen($outMoy) < 70)  return $outMoy;
 				return $outCourt;
 			} else {
-				if (isset($lstOut[$format]))
-					return $$lstOut[$format];
-				else
-					return "";
+				if (isset($lstOut[$format])) return $$lstOut[$format];
+				else return "";
 			}
 
 		}
 	}
     
-    public static function traceVar(/*mixed*/ $var, /*string*/ $name = null){
+    static public function traceVar(/*mixed*/ $var, /*string*/ $name = null){
         
         $trace = '';
         if(isset($name)){
