@@ -9,11 +9,12 @@
 class Log {
 
 	// Fichier de sortie
-	static private $_fileTrace;
-	static private $_niveau;
-	static private $id = null;
+	static private $_config = array();
+	static private $_id = null;
+	static private $_init = false;
+	static private $_entete = false;
 	
-	// Constante
+	// Constante de niveau
 	const DEBUGFIN = 1;
 	const DEBUG = 2;
 	const NOTICE = 4;
@@ -24,7 +25,12 @@ class Log {
 		2 => 'DEBUG',
 		4 => 'NOTICE',
 		8 => 'WARNING',
-		16=> 'ERROR'
+		16=> 'ERROR',
+		'DEBUGFIN' => 1,
+		'DEBUG'    => 2,
+		'NOTICE'   => 4,
+		'WARNING'  => 8,
+		'ERROR'    => 16
 	);
 	
 	/**
@@ -34,27 +40,54 @@ class Log {
 	 * @return void
 	 */
 	 
-	static public function init(array $options) {
-		$default =	array(
-						"niveau"	=> self::WARNING,
-						"fichier"	=> self::_autoFileName()
-					);
-		$option = array_merge($default, $options);
-		// Purge de la trace
-		if (file_exists(self::$_fileTrace)) {
-			$dateModif = new DateTime(); // dernière modif
-			$dateModif->setTimestamp(filemtime(self::$_fileTrace));
-			$maintenant = new DateTime(); // maintenant
-			$inter = $maintenant->diff($dateModif); // d�lais depuis la modif
-			$interMinute = ($inter->days * 24 + $inter->h) * 60 + $inter->i; // convertion en minute
-			settype($interMinute, 'integer');
-			// Suppression si le fichier a été modifié  il y a + de 2 minutes
-			if ($interMinute > 2){
-				unlink(self::$_fileTrace);
+	static public function init(array $options = array()) {
+		if(!self::$_init){
+			$default =	array(
+							"niveau"	=> self::WARNING,
+							"fichier"	=> self::_autoFileName(),
+							"longid"	=> 3
+						);
+			self::$_config = array_merge($default, $options);
+			self::$_id = self::_generateId();
+			self::$_init = true;			
+		}else {
+			throw new BadMethodCallException('Le log est déjà initialisé! ');
+		}
+	}
+    
+    private static function _autoFileName(){
+    	return ROOT_LOG . 'log-' . date("Ymd") . 'txt';
+    }
+	
+	static private function _generateId(){
+		$alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$id = '';
+		for ($i = 0; $i < self::$_config['longid']; $i++) {
+			$id .= substr($alpha, rand(0, strlen($alpha)-1), 1);
+		}
+		return $id;
+	}
+	
+	public static function trace($niveau, $message) {
+		$msgOut = '';
+		if (self::$_config['niveau'] <= $niveau) {
+			if (self::$_init !== true) {
+				self::init();
+			}
+			if (self::$_entete !== true){
+				$msgOut .= self::entete();
+			}
+			$msgOut .= self::ajouteIdDebutLigne(self::$_id, $message);
+			$msgOut = trim($msgOut);
+			$msgOut .= "\n";
+			$fileOut = fopen(self::$_config['fichier'], 'a');
+			if ($fileOut !== false) {
+				fwrite($fileOut, $msgOut);
+				fclose($fileOut);
 			}
 		}
 	}
-
+	
 	/**
 	 * MyDebug::traceFonction()
 	 * 
@@ -63,51 +96,50 @@ class Log {
 	 * @return void
 	 */
 	static public function traceFonction() {
-			// D�claration des variables locales
-			$backtrace = debug_backtrace();
-			$fonctionTest = $backtrace[1];
-			$fonctionParent = "";
-			$fonction = "";
-			$fonctionMere = "";
-			$fichier = "";
-			$class = "";
-			$classParent = "";
-			$arguments = "";
-			$out = "";
-			$fileOut = "";
-			// D�termination du fichier / ligne
-			if (isset($fonctionTest['file']) && isset($fonctionTest['line'])) {
-				$fichier = pathinfo($fonctionTest['file'], PATHINFO_BASENAME) . '[' . $fonctionTest['line'] . ']';
+		// Déclaration des variables locales
+		$backtrace = debug_backtrace();
+		$fonctionTest = $backtrace[1];
+		$fonctionParent = "";
+		$fonction = "";
+		$fonctionMere = "";
+		$fichier = "";
+		$class = "";
+		$classParent = "";
+		$arguments = "";
+		$out = "";
+		$fileOut = "";
+		// Détermination du fichier / ligne
+		if (isset($fonctionTest['file']) && isset($fonctionTest['line'])) {
+			$fichier = pathinfo($fonctionTest['file'], PATHINFO_BASENAME) . '[' . $fonctionTest['line'] . ']';
+		} else {
+			$fichier = '';
+		}
+		// Détermination des arguments
+		$arguments = self::parametre($fonctionTest['args']);
+			// Détermination de la fonction
+		if (isset($fonctionTest['class']) && $fonctionTest['class'] != '') {
+			$class = $fonctionTest['class'] . ':';
+		} else {
+			$class = '';
+		}
+		$fonction = $class . $fonctionTest['function'] . '(' . $arguments . ')';
+		// Détermination de l'utilisation de la mémoire
+		$memoire = '[' . self::octeLisible(memory_get_usage()) . '/' . self::octeLisible(memory_get_peak_usage
+			()) . ']';
+		// Détermination de la fonction parent (fichier / function)
+		if (isset($backtrace[2])) {
+			$fonctionParent = $backtrace[2];
+			if (isset($fonctionParent['class']) && $fonctionParent['class'] != '') {
+				$classParent = $fonctionParent['class'] . ':';
 			} else {
-				$fichier = '';
+				$classParent = '';
 			}
-			// D�termination des arguments
-			$arguments = self::parametre($fonctionTest['args']);
-
-			// D�termination de la fonction
-			if (isset($fonctionTest['class']) && $fonctionTest['class'] != '') {
-				$class = $fonctionTest['class'] . ':';
-			} else {
-				$class = '';
-			}
-			$fonction = $class . $fonctionTest['function'] . '(' . $arguments . ')';
-			// D�termination de l'utilisation de la m�moire
-			$memoire = '[' . self::octeLisible(memory_get_usage()) . '/' . self::octeLisible(memory_get_peak_usage
-				()) . ']';
-			// D�termination de la fonction parent (fichier / function)
-			if (isset($backtrace[2])) {
-				$fonctionParent = $backtrace[2];
-				if (isset($fonctionParent['class']) && $fonctionParent['class'] != '') {
-					$classParent = $fonctionParent['class'] . ':';
-				} else {
-					$classParent = '';
-				}
-				$fonctionMere = $classParent . $fonctionParent['function'] . '()';
-				$out = "{$fichier}> {$fonctionMere}> {$fonction}  {$memoire}\n";
-			} else {
-				$out = "{$fichier}> {$fonction}  {$memoire}\n";
-			}
-			self::trace($out);
+			$fonctionMere = $classParent . $fonctionParent['function'] . '()';
+			$out = "{$fichier}> {$fonctionMere}> {$fonction}  {$memoire}\n";
+		} else {
+			$out = "{$fichier}> {$fonction}  {$memoire}\n";
+		}
+		self::trace(self::DEBUGFIN, $out);
 	}
 
 	/**
@@ -209,25 +241,6 @@ class Log {
 	}
 
 	/**
-	 * MyDebug::generateurID()
-	 * 
-	 * @static
-	 * @access priv�
-	 * @param entier	$long longueur de l'ID
-	 * @return chaine	ID
-	 */
-	private static function generateurID($long = 5) {
-		$id = '';
-		$code = 0;
-		for ($i = 0; $i < $long; $i++) {
-			$code = 65 + rand(0, 51);
-			if ($code > 90) { $code += 6; }
-			$id .= chr($code); // $code = [a-zA-Z]
-		}
-		return $id;
-	}
-
-	/**
 	 * MyDebug::entete()
 	 * 
 	 * @static
@@ -284,39 +297,13 @@ class Log {
 		return $enteteOut;
 	}
 
-	/**
-	 * MyDebug::trace()
-	 * 
-	 * @static
-	 * @access public
-	 * @param chaine $msg
-	 * @return void
-	 */
-	public static function trace($msg) {
-		$msgOut = '';
-		if (self::getModeDebug() == true) {
-			$fileOut = fopen(self::$_fileTrace, 'a');
-			if ($fileOut !== false) {
-				if (self::$init !== true) {
-					self::$ID = self::generateurID(2);
-					self::$init = true;
-					$msgOut .= self::entete();
-				}
-				$msgOut .= self::ajouteIdDebutLigne(self::$ID, $msg);
-				if (substr($msgOut, -1) != "\n")
-					$msgOut .= "\n";
 
-				fwrite($fileOut, $msgOut);
-				fclose($fileOut);
-			}
-		}
-	}
 
 	/**
 	 * MyDebug::encadre()
 	 * 
 	 * @static
-	 * @access priv�
+	 * @access privé
 	 * @param chaine $msg
 	 * @param chaine(8) $cadre commence par le coin haut gauche, tourne dans le sens des aiguille d'une montre et fini par le cot� gauche
 	 * @return chaine
@@ -379,7 +366,7 @@ class Log {
 	 * MyDebug::listeVarGlob()
 	 * 
 	 * @static
-	 * @access priv�
+	 * @access privé
 	 * @param tableau $tableau
 	 * @param entier $format -1 auto, 0 long, 1 moyen, 2 court
 	 * @return
@@ -434,29 +421,6 @@ class Log {
 
 		}
 	}
-
-	/**
-	 * MyDebug::getModeDebug()
-	 * 
-	 * @static
-	 * @access privé
-	 * @return boolean
-	 */
-	private static function getModeDebug() {
-		// D�tection de l'initialisation de la variable $modeDebug
-		if (is_null(self::$modeDebug)) {
-			// initialisation de $modeDebug avec INI_FILE
-			if (!$settings = parse_ini_file(INI_FILE, true)){
-				throw new exception("Impossible d'ouvrir '$file'");
-			}
-			if ($settings['ModeDebug']['actif'] == 1) {
-				self::$modeDebug = true;
-			} else {
-				self::$modeDebug = false;
-			}
-		}
-		return self::$modeDebug;
-	}
     
     public static function traceVar(/*mixed*/ $var, /*string*/ $name = null){
         
@@ -467,10 +431,6 @@ class Log {
         $trace .= print_r($var, true);
         self::trace($trace);
         
-    }
-    
-    private static function _autoFileName(){
-    	return ROOT_LOG . 'log-' . date("Ymd") . 'txt';
     }
     
 }
