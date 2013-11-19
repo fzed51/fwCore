@@ -20,18 +20,7 @@ class Log {
 	const NOTICE = 4;
 	const WARNING = 8;
 	const ERROR = 16;	
-	static public $DIC_NIV = array (
-		1 => 'DEBUGFIN',
-		2 => 'DEBUG',
-		4 => 'NOTICE',
-		8 => 'WARNING',
-		16=> 'ERROR',
-		'DEBUGFIN' => 1,
-		'DEBUG'    => 2,
-		'NOTICE'   => 4,
-		'WARNING'  => 8,
-		'ERROR'    => 16
-	);
+	static public $DIC_NIV = array ();
 	
 	/**
 	 * MyDebug::init()
@@ -47,12 +36,24 @@ class Log {
 							"fichier"	=> self::_autoFileName(),
 							"longid"	=> 3
 						);
+			self::_construitDictionnaire();
 			self::$_config = array_merge($default, $options);
 			self::$_id = self::_generateId();
 			self::$_init = true;			
 		}else {
 			throw new BadMethodCallException('Le log est déjà initialisé! ');
 		}
+	}
+	
+	static private function _construitDictionnaire(){
+		self::$DIV_NIV = array(
+			self::DEBUGFIN => 'DEBUGFIN',
+			self::DEBUG    => 'DEBUG',
+			self::NOTICE   => 'NOTICE',
+			self::WARNING  => 'WARNING',
+			self::ERROR    => 'ERROR'
+		);
+		Tools::duplicInvertArray(self::$DIV_NIV);
 	}
     
     private static function _autoFileName(){
@@ -101,7 +102,8 @@ class Log {
 		$fileOut = "";
 		// Détermination du fichier / ligne
 		if (isset($fonctionTest['file']) && isset($fonctionTest['line'])) {
-			$fichier = pathinfo($fonctionTest['file'], PATHINFO_BASENAME) . '[' . $fonctionTest['line'] . ']';
+			$fichier = pathinfo($fonctionTest['file'], PATHINFO_BASENAME) . '[' 
+					. $fonctionTest['line'] . ']';
 		} else {
 			$fichier = '';
 		}
@@ -115,7 +117,8 @@ class Log {
 		}
 		$fonction = $class . $fonctionTest['function'] . '(' . $arguments . ')';
 		// Détermination de l'utilisation de la mémoire
-		$memoire = '[' . self::_octeLisible(memory_get_usage()) . '/' . self::_octeLisible(memory_get_peak_usage
+		$memoire = '[' . self::_octeLisible(memory_get_usage()) . '/' 
+				. self::_octeLisible(memory_get_peak_usage
 			()) . ']';
 		// Détermination de la fonction parent (fichier / function)
 		if (isset($backtrace[2])) {
