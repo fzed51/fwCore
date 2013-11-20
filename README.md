@@ -9,9 +9,9 @@ TODO :
 ------
 
 Tout est à faire :
-- [ ] routage
-- [ ] autentification
-- [ ] controleur
+- [/] routage
+- [X] autentification
+- [/] controleur
 - [ ] model
 - [ ] vue
-- [ ] helper
+- [/] helper
