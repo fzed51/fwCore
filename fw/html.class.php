@@ -14,7 +14,7 @@ class Html{
 	static public function adresse(array $controlAction){
 		return $adresse;
 	}
-	static public function link(/*string*/$libelle, /*string|array*/$href, array $options = array()){
+	public function link(/*string*/$libelle, /*string|array*/$href, array $options = array()){
 		$defaultOptions = array(
 			"raw" => false,
 			"title" => ''
