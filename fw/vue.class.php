@@ -13,4 +13,10 @@
  */
 class vue {
     //put your code here
+	private $html;
+	private $form;
+	
+	public function __construct() {
+		$this->html = new Html();
+	}
 }
