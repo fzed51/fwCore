@@ -42,6 +42,9 @@ class Controleur {
 		$this->requette = $requette;
 		$action = ucfirst(strtolower($action));
 		$avantAction = 'avant'.$action;
+		if(method_exists($this, 'initAppControleur')){
+			$this->initAppControleur();
+		}
 		if(method_exists($this, 'initControleur')){
 			$this->initControleur();
 		}

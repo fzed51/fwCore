@@ -18,4 +18,5 @@ $autoloader->addDir(ROOT_FWK, Autoloader::SANS_SOUSDOSSIER)
 $auth = Auth::getInstance();
 $auth->test();
 
-require ROOT_VUE.'index.php';
+$routeur = new Routeur();
+$routeur->route(new Requette());

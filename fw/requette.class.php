@@ -11,7 +11,7 @@
  *
  * @author fabien.sanchez
  */
-class requette {
+class Requette {
 	
 	const DEFAUT_CONTROLEUR = 'home';
 	const DEFAUT_ACTION = 'index';
@@ -69,4 +69,24 @@ class requette {
 		return false;
 	}
 	
+	public function setPrioriteAcces(/*string*/ $ordre){
+		// TODO : Validation de l'ordre
+		$this->_acces = $ordre;
+	}
+	
+	public function getControl(){
+		if(isset($this->control)){
+			return $this->control;
+		}else{
+			return self::DEFAUT_CONTROLEUR;
+		}
+	}
+	
+	public function getAction(){
+		if(isset($this->action)){
+			return $this->action;
+		}else{
+			return self::DEFAUT_ACTION;
+		}
+	}
 }
