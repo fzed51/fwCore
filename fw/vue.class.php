@@ -18,5 +18,6 @@ class vue {
 	
 	public function __construct() {
 		$this->html = new Html();
+		$this->form = new Form();
 	}
 }
