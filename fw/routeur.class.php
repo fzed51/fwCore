@@ -16,7 +16,7 @@ class Routeur {
 	
 	public function route(Requette $requette){
 		$ctrlNom = $requette->getControl();
-		$class_name = ucfirst(strtolower($ctrlNom))+'Controleur';
+		$class_name = ucfirst(strtolower($ctrlNom)).'Controleur';
 		$action = ucfirst(strtolower($requette->getAction()));
 		if(class_exists($class_name, true)){
 			$controleur = new $class_name();
