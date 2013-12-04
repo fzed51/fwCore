@@ -11,21 +11,51 @@
  */
 
 class Html{
-	static public function adresse(array $controlAction){
+	public function adresse(array $controlAction){
 		return $adresse;
 	}
-	public function link(/*string*/$libelle, /*string|array*/$href, array $options = array()){
+	
+	/**
+	 * function Link
+	 *   
+	 * @param string $fichier
+	 * @param bool $return
+	 * @param array $options
+	 * @return null/string
+	 * 
+	 * <!ELEMENT link EMPTY>
+	 *	<!ATTLIST link
+	 *	  %attrs;
+	 *	  charset     %Charset;      #IMPLIED
+	 *	  href        %URI;          #IMPLIED
+	 *	  hreflang    %LanguageCode; #IMPLIED
+	 *	  type        %ContentType;  #IMPLIED
+	 *	  rel         %LinkTypes;    #IMPLIED
+	 *	  rev         %LinkTypes;    #IMPLIED
+	 *	  media       %MediaDesc;    #IMPLIED
+	 *	  >
+	 */
+	public function link(/*string*/$fichier, /*bool*/$return = false, array $options = array()){
 		$defaultOptions = array(
-			"raw" => false,
-			"title" => ''
+			"charset" => '',
+			"hreflang" => '',
+			"type" => 'text/css',
+			"rel" => '',
+			"rev" => '',
+			"media" => 'screen'
 			);
-		if( gettype($href) == 'array'){
-			$href = self::adresse($href);
+		$href = '';
+		$option = array_merge($defaultOptions, $options);
+		if(filter_var($fichier, FILTER_VALIDATE_URL)){
+			$href = $fichier;
+		}else{
+			// TODO : détection du fichier css min pour le dev
 		}
-		if( gettype($href) != 'string'){
-			throw new InvalidArgumentException("la cible de <Html::link> n'est pas valide!");
+		if($return){
+			return $link;
+		} else {
+			echo $link;
 		}
-		return $link;
 	}
 
 }
