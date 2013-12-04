@@ -22,7 +22,7 @@
 	<title>Starter Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./www_root/style/bootstrap.css" rel="stylesheet">
+	<?= $this->html->link('bootstrap');?>
 
     <!-- Custom styles for this template -->
     <link href="starter-template.css" rel="stylesheet">
