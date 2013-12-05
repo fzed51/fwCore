@@ -2,6 +2,7 @@
 ## special projet
 #################
 *.ini
+*log.txt
 
 #################
 ## phpDesigner
