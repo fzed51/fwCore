@@ -13,5 +13,5 @@ Tout est à faire :
 - [X] autentification
 - [/] controleur
 - [ ] model
-- [ ] vue
+- [/] vue
 - [/] helper
