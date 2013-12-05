@@ -152,6 +152,5 @@ class Autoloader {
 	
 	public function start(){
 		spl_autoload_register(array($this, 'load'));
-	}
-        
+	}        
 }
