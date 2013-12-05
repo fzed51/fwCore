@@ -71,7 +71,7 @@ class Log {
 	
 	public static function trace($niveau, $message) {
 		if (self::$_config['niveau'] <= $niveau) {
-			if (self::$_init !== true) {
+			if (!self::$_init) {
 				self::init();
 			}
 			$msgOut = '';
@@ -164,13 +164,11 @@ class Log {
 		$out = "";
 		$longChaine = 25; // longueur max des string
 
-		if (!is_array($lstArgs))
-			$lstArgs = array($lstArgs);
-
+		if (!is_array($lstArgs)) $lstArgs = array($lstArgs);
+		
 		foreach ($lstArgs as $arg) {
 
-			if (strlen($out) > 0)
-				$out .= ', ';
+			if (strlen($out) > 0) $out .= ', ';
 
 			switch (getType($arg)) {
 				case "boolean":
@@ -302,7 +300,7 @@ class Log {
 		$lignes = explode("\n", $msg);
 		$nbLigne = count($lignes);
 		for ($i = 0; $i < $nbLigne; $i++) {
-			if ($i == 1)
+			if ($i > 0)
 				$separateur = $separateur2;
 			$msgOut .= $Id . $separateur . $lignes[$i] . "\n";
 		}
@@ -326,7 +324,7 @@ class Log {
 					$$out .= ',';
 			}
 
-			// cl�
+			// clé
 			foreach ($lstOut as $out) {
 				$$out .= "[$cle]";
 			}
@@ -362,7 +360,7 @@ class Log {
             $trace .= "$name = ";
         }
         $trace .= print_r($var, true);
-        self::trace($trace);
+        self::trace(self::DEBUG, $trace);
         
     }
     
