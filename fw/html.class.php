@@ -4,13 +4,13 @@
  * Html
  * 
  * @package fwCore
- * @author Fabien SANCHEZ
- * @copyright 2013
- * @static
- * @access public
  */
 
 class Html{
+	
+	private $_stock_css = array();
+	private $_stock_js = array();
+	
 	public function adresse(array $controlAction){
 		return $adresse;
 	}
@@ -49,44 +49,49 @@ class Html{
 	 * @param bool $return
 	 * @param array $options
 	 * @return null/string
-	 * 
-	 * <!ELEMENT link EMPTY>
-	 *	<!ATTLIST link
-	 *	  %attrs;
-	 *	  charset     %Charset;      #IMPLIED
-	 *	  href        %URI;          #IMPLIED
-	 *	  hreflang    %LanguageCode; #IMPLIED
-	 *	  type        %ContentType;  #IMPLIED
-	 *	  rel         %LinkTypes;    #IMPLIED
-	 *	  rev         %LinkTypes;    #IMPLIED
-	 *	  media       %MediaDesc;    #IMPLIED
-	 *	  >
 	 */
-	public function link(/*string*/$href, /*bool*/$return = false, array $options = array()){
+	public function link(/*string*/$href, array $options = array()){
 		$defaultOptions = array(
 			"charset" => '',
 			"hreflang" => '',
-			"type" => 'text/css',
+			"type" => '',
 			"rel" => '',
 			"rev" => '',
-			"media" => 'screen'
+			"media" => ''
 			);
 		$option = array_merge($defaultOptions, $options);
 		$attributs = array_merge(array('href'=>$href), $option);
 		$link = $this->elementAutoClose('link', $attributs);
-		if($return){
-			return $link;
-		} else {
-			echo $link;
-		}
+		return $link;
 	}
 	
-	public function css(/*string*/$fichier){
+	/**
+	 * fonction css
+	 * génère un lien avec une feuille de stye Externe;
+	 * 
+	 * @param type $fichier
+	 * @param type $return
+	 * @param type $attributs
+	 * @return null
+	 */
+	public function css(/*string*/$fichier, $return = true, $attributs = array()){
+		$defaultAttrbs = array(
+			'rel' => 'stylesheet',
+			'type' => 'text/css',
+			'media' => 'screen'
+		);
+		$attributs = array_merge($defaultAttrbs, $attributs);
+		$href = '';
 		if(! filter_var($fichier, FILTER_VALIDATE_URL)){
 			// TODO : détection du fichier css min pour le dev
+		}
+		$link = $this->link($href, $defaultAttrbs);
+		if($return){
+			return $link;
+		}else{
+			$this->_stock_css[] = $link;
+			return null;
 		}
 	}
 
 }
-
-?>
