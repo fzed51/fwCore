@@ -2,6 +2,7 @@
 
 /**
  * Html
+ * Helper html pour HTML5
  * 
  * @package fwCore
  */
@@ -52,12 +53,11 @@ class Html{
 	 */
 	public function link(/*string*/$href, array $options = array()){
 		$defaultOptions = array(
-			"charset" => '',
 			"hreflang" => '',
 			"type" => '',
 			"rel" => '',
-			"rev" => '',
-			"media" => ''
+			"media" => '',
+			"size" => ''
 			);
 		$option = array_merge($defaultOptions, $options);
 		$attributs = array_merge(array('href'=>$href), $option);
