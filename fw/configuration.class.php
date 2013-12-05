@@ -8,8 +8,15 @@
  */
 class Configuration
 {
-    /** Tableau des paramètres de configuration */
+	/** Constantes qui deffinissent les mode de fonctionnement */
+	const MODE_PROD = 1;
+	const MODE_DEV  = 0;
+	
+    /** @var array Tableau des paramètres de configuration */
     private static $parametres;
+	
+	/** @var integer Mode de fonctionnement de l'appli*/
+	private static $mode;
 
     /**
      * Renvoie la valeur d'un paramètre de configuration
@@ -20,10 +27,13 @@ class Configuration
      */
     public static function get($nom, $valeurParDefaut = null)
     {
-        if (isset(self::getParametres()[$nom])) {
-            $valeur = self::getParametres()[$nom];
-        }
-        else {
+        if ($nom == "mode"){
+			return self::$mode;
+		}
+		$param = self::getParametres();
+		if (isset($param[$nom])) {
+            $valeur = $param[$nom];
+        } else {
             $valeur = $valeurParDefaut;
         }
         return $valeur;
@@ -40,13 +50,15 @@ class Configuration
     {
         if (self::$parametres == null) {
             $cheminFichier = "Config/dev.ini";
+			self::$mode = self::MODE_DEV;
             if (!file_exists($cheminFichier)) {
                 $cheminFichier = "Config/prod.ini";
+				self::$mode = self::MODE_PROD;
             }
             if (!file_exists($cheminFichier)) {
                 throw new Exception("Aucun fichier de configuration trouvé");
-            }
-            else {
+				self::$mode = null;
+            } else {
                 self::$parametres = parse_ini_file($cheminFichier);
             }
         }
