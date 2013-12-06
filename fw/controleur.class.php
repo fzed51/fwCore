@@ -6,6 +6,9 @@
  * and open the template in the editor.
  */
 
+class ControleurException extends Exception {
+}
+
 /**
  * Description of Controleur
  *
@@ -21,6 +24,7 @@ class Controleur {
 		$this->requette = null;
 		$this->name = __CLASS__;
 		$this->action = '';
+		$this->vue = null;
 	}
 	
 	public function __isset($key){
@@ -30,7 +34,7 @@ class Controleur {
 		if ($this->data[$key]){
 			return $this->data[$key];
 		} else {
-			throw new Exception("La propriété '$key' n'existe pas!");
+			throw new ControleurException("La propriété '$key' n'existe pas!");
 		}
 		
 	}
@@ -52,9 +56,10 @@ class Controleur {
 			$this->$avantAction();
 		}
 		if(method_exists($this, $action)){
+			$this->vue = new Vue($this->name, $action);
 			$this->$action($requette);
 		} else {
-			throw new RuntimeException("L'action '{$this->action}' n'existe pas dans le controleur '{$this->name}'!");
+			throw new ControleurException("L'action '{$this->action}' n'existe pas dans le controleur '{$this->name}'!");
 		}
     }
     
