@@ -24,6 +24,7 @@ define('ROOT_LOG', ROOT . 'log' . DS);
 define('ROOT_MODEL',      ROOT_APP . 'model' . DS);
 define('ROOT_VUE',        ROOT_APP . 'vue' . DS);
 define('ROOT_CONTROLEUR', ROOT_APP . 'controleur' . DS);
+define('ROOT_CONFIG',     ROOT_APP . 'config' . DS);
 
 define('ROOT_JS',    ROOT_WWW . 'script' . DS);
 define('WEB_JS',     WEB_ROOT . 'script' . WS);
@@ -31,7 +32,5 @@ define('ROOT_CSS',   ROOT_WWW . 'style' . DS);
 define('WEB_CSS',    WEB_ROOT . 'style' . WS);
 define('ROOT_IMAGE', ROOT_WWW . 'image' . DS);
 define('WEB_IMAGE',  WEB_ROOT . 'image' . WS);
-
-define('ROOT_CONFIG', ROOT_FWK . 'config' . DS);
 
 require(ROOT_FWK.'bootstrap.php');
