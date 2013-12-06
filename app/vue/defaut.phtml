@@ -25,7 +25,8 @@
 	<?= $this->html->css('bootstrap');?>
 
     <!-- Custom styles for this template -->
-    <link href="starter-template.css" rel="stylesheet">
+	<?= $this->html->css('starter-template');?>
+    <!--<link href="starter-template.css" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -67,26 +68,28 @@
 			<h1>Bootstrap starter template</h1>
 				<p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
 		</div>
-		<div class="row">
-			<div class="col-lg-4">
-				<pre><?php var_dump($_SERVER); ?></pre>
-			</div>
-			<div class="col-lg-4">
-				<pre><?php var_dump(get_defined_constants(true)); ?></pre>
-			</div>
-			<div class="col-lg-4">
-				<pre><?php var_dump(get_defined_vars()); ?></pre>
-			</div>
-			
-		</div>
 
 	</div><!-- /.container -->
 
+	<div class="row debug">
+		<div class="col-lg-4">
+			<pre><?php var_dump($_SERVER); ?></pre>
+		</div>
+		<div class="col-lg-4">
+			<pre><?php var_dump(get_defined_constants(true)); ?></pre>
+		</div>
+		<div class="col-lg-4">
+			<pre><?php var_dump(get_defined_vars()); ?></pre>
+		</div>
+
+	</div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="./www_root/script/bootstrap.min.js"></script>
+	<?= $this->html->script('https://code.jquery.com/jquery-1.10.2.min.js'); ?>
+	<?= $this->html->js('bootstrap'); ?>
+    <!--<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="./www_root/script/bootstrap.min.js"></script>-->
   </body>
 </html>
