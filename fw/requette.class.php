@@ -31,17 +31,7 @@ class Requette {
 	
 	public function __get($name) {
 		for ($i = 0; $i < strlen($this->_acces); $i++) {
-			switch (strtoupper( $this->_acces[$i])) {
-				case 'P':
-					$cherche = 'post';
-					break;
-				case 'G':
-					$cherche = 'get';
-					break;
-				case 'C':
-					$cherche = 'cookie';
-					break;
-			}
+			$cherche = $this->_getNomAccesComplet($this->_acces[$i]);
 			if(isset($this->_data[$cherche][$name])){
 				return $this->_data[$cherche][$name];
 			}
@@ -51,22 +41,21 @@ class Requette {
 	
 	public function __isset($name) {
 		for ($i = 0; $i < strlen($this->_acces); $i++) {
-			switch (strtoupper( $this->_acces[$i])) {
-				case 'P':
-					$cherche = 'post';
-					break;
-				case 'G':
-					$cherche = 'get';
-					break;
-				case 'C':
-					$cherche = 'cookie';
-					break;
-			}
+			$cherche = $this->_getNomAccesComplet($this->_acces[$i]);
 			if(isset($this->_data[$cherche][$name])){
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	private function _getNomAccesComplet(/**/ $abrev){
+		$_dicCherche = array(
+			'P'=> 'post',
+			'G'=> 'get',
+			'C'=> 'cookie',
+		);
+		return  $_dicCherche[strtoupper($abrev)];
 	}
 	
 	public function setPrioriteAcces(/*string*/ $ordre){
