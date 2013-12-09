@@ -19,4 +19,18 @@ class Tools {
 		}
 		$array = array_merge($array, $iArray);
 	}
+	
+	static public function finiPar(/*string*/$chaineSource, /*string*/$chaineRecherche){
+		if(strlen($chaineRecherche)<=strlen($chaineSource)){
+			$finIdentique = substr_compare($chaineSource, 
+					$chaineRecherche, 
+					-1, 
+					-1*(strlen($chaineRecherche)), true
+				);
+			if($finIdentique == 0){
+				return true;
+			}
+		}
+		return false;
+	}
 }
