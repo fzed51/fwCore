@@ -41,11 +41,19 @@ class Controleur {
 	public function __set($key, $val){
 		$this->data[$key]=$val;
 	}
+	
+	/**
+	 * 
+	 * @param string $name
+	 */
+	public function setNom($name){
+		$this->name = $name;
+	}
 
     public function executeAction(/*string*/$action, Requette $requette){
 		$this->requette = $requette;
-		$action = ucfirst(strtolower($action));
-		$avantAction = 'avant'.$action;
+		$action = strtolower($action);
+		$avantAction = 'avant'.ucfirst($action);
 		if(method_exists($this, 'initAppControleur')){
 			$this->initAppControleur();
 		}
@@ -56,10 +64,10 @@ class Controleur {
 			$this->$avantAction();
 		}
 		if(method_exists($this, $action)){
-			$this->vue = new Vue($this->name, $action);
+			$this->vue = new Vue(array($this->name, $action));
 			$this->$action($requette);
-			ob_start(ob_gzhandler);
-			$this->vue->sets($this->data);
+			ob_start('ob_gzhandler');
+			$this->vue->set($this->data);
 			echo $this->vue->generer();
 			ob_end_flush();
 		} else {
