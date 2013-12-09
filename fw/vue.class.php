@@ -38,7 +38,7 @@ class Vue implements iVue {
 	public function generer(){
 		extract($this->_data);
 		ob_start();
-		require $this->fileVue;
+		include $this->fileVue;
 		$contents = ob_get_contents();
 		ob_end_clean();
 		ob_start();
@@ -49,7 +49,7 @@ class Vue implements iVue {
 	}
 	
 	public function setLayout(/*string*/ $fichier){
-		$filename = ROOT_VUE . $fichier . 'phtml';
+		$filename = ROOT_VUE . $fichier . '.phtml';
 		if(file_exists($filename)){
 			$this->fileLayout = $filename;
 		} else {
@@ -65,9 +65,9 @@ class Vue implements iVue {
 		}else{
 			$nom = $fichier;
 		}
-		$filename = ROOT_VUE . $fichier . 'phtml';
+		$filename = ROOT_VUE . $fichier . '.phtml';
 		if(file_exists($filename)){
-			$this->fileLayout = $filename;
+			$this->fileVue = $filename;
 		} else {
 			throw new VueException("La page '$nom' n'a pas été trouvée ! ");
 		}
