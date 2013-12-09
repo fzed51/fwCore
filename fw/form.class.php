@@ -13,8 +13,11 @@
  */
 class form {
 	
+	private $data;
+	
 	public function __construct() {
-		passthru($command);
 	}
+	
+	
 	
 }

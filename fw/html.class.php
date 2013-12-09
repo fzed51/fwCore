@@ -12,10 +12,19 @@ class Html{
 	private $_stock_css = array();
 	private $_stock_js = array();
 	
-	public function adresse(array $controlAction){
+	public function ctrAction(array $controlAction){
+		$adrCtrlActin = join(WS, $controlAction);
+		$adresse = WEB_ROOT . $adrCtrlActin;
 		return $adresse;
 	}
 	
+	protected function chercheFichier($nom, $extension){
+		if(Tools::finiPar($nom, $extension)){
+			
+		}
+	}
+
+
 	protected function concatAttributs($listeAttributs){
 		$attribut = array();
 		foreach ($listeAttributs as $key => $value) {
@@ -84,6 +93,7 @@ class Html{
 		$href = '';
 		if(! filter_var($fichier, FILTER_VALIDATE_URL)){
 			// TODO : détection du fichier css min pour le dev
+			$href = $this->chercheFichier($fichier, '.css');
 		}
 		$link = $this->link($href, $defaultAttrbs);
 		if($return){
@@ -93,5 +103,12 @@ class Html{
 			return null;
 		}
 	}
-
+	
+	public function script(/*string*/$script){
+		
+	}
+	
+	public function js(/*string*/$script){
+		
+	}
 }
