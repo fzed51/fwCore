@@ -58,6 +58,10 @@ class Controleur {
 		if(method_exists($this, $action)){
 			$this->vue = new Vue($this->name, $action);
 			$this->$action($requette);
+			ob_start(ob_gzhandler);
+			$this->vue->sets($this->data);
+			echo $this->vue->generer();
+			ob_end_flush();
 		} else {
 			throw new ControleurException("L'action '{$this->action}' n'existe pas dans le controleur '{$this->name}'!");
 		}

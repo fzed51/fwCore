@@ -20,6 +20,7 @@ class Routeur {
 		$action = ucfirst(strtolower($requette->getAction()));
 		if(class_exists($class_name, true)){
 			$controleur = new $class_name();
+			$controleur->setNom($ctrlNom);
 			$controleur->executeAction($action, $requette);
 		} else {
 			throw new RuntimeException("Le controleur '$ctrlNom' n'existe pas! ");

@@ -36,7 +36,16 @@ class Vue implements iVue {
 	}
 	
 	public function generer(){
-		
+		extract($this->_data);
+		ob_start();
+		require $this->fileVue;
+		$contents = ob_get_contents();
+		ob_end_clean();
+		ob_start();
+		require $this->fileLayout;
+		$page = ob_get_contents();
+		ob_end_clean();
+		return $page;		
 	}
 	
 	public function setLayout(/*string*/ $fichier){
