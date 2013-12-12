@@ -21,11 +21,12 @@ class Tools {
 	}
 	
 	static public function finiPar(/*string*/$chaineSource, /*string*/$chaineRecherche){
-		if(strlen($chaineRecherche)<=strlen($chaineSource)){
+		$longRecherche = strlen($chaineRecherche);
+		if($longRecherche<=strlen($chaineSource)){
 			$finIdentique = substr_compare($chaineSource, 
 					$chaineRecherche, 
-					-1, 
-					-1*(strlen($chaineRecherche)), true
+					-$longRecherche, 
+					$longRecherche, true
 				);
 			if($finIdentique == 0){
 				return true;
