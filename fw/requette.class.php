@@ -21,7 +21,7 @@ class Requette {
 	private $_data = array();
 			
 	public function __construct() {
-		$this->acces = self::DEFAUT_ACCES;
+		$this->_acces = self::DEFAUT_ACCES;
 		$this->_data = array(
 			'post'   => (isset($_POST))  ?$_POST  :array(),
 			'get'    => (isset($_GET))   ?$_GET   :array(),
