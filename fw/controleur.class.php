@@ -14,9 +14,9 @@ class ControleurException extends Exception {
  *
  * @author Sandrine
  */
-class Controleur {
+abstract class Controleur {
     
-    private $data = array();
+    private $_data = array();
 	
 	public function __construct() {
 		$this->session = Session::getInstance();
@@ -28,18 +28,18 @@ class Controleur {
 	}
 	
 	public function __isset($key){
-		return isset($this->data[$key]);
+		return isset($this->_data[$key]);
 	}
 	public function __get($key){
-		if ($this->data[$key]){
-			return $this->data[$key];
+		if (isset($this->_data[$key])){
+			return $this->_data[$key];
 		} else {
 			throw new ControleurException("La propriété '$key' n'existe pas!");
 		}
 		
 	}
 	public function __set($key, $val){
-		$this->data[$key]=$val;
+		$this->_data[$key]=$val;
 	}
 	
 	/**
@@ -67,7 +67,7 @@ class Controleur {
 			$this->vue = new Vue(array($this->name, $action));
 			$this->$action($requette);
 			ob_start('ob_gzhandler');
-			$this->vue->set($this->data);
+			$this->vue->set($this->_data);
 			echo $this->vue->generer();
 			ob_end_flush();
 		} else {
