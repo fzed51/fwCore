@@ -20,8 +20,33 @@ class Html{
 	
 	protected function chercheFichier($nom, $extension){
 		if(Tools::finiPar($nom, $extension)){
-			
+			$nom = substr($nom,0,-strlen($extension));
 		}
+		$locDir = '';
+		$webDir = '';
+		$fichier = '';
+		switch ($extension) {
+			case '.css':
+				$locDir = ROOT_CSS;
+				$webDir = WEB_CSS;
+				break;
+			case '.js':
+				$locDir = ROOT_JS;
+				$webDir = WEB_JS;
+				break;
+		}
+		if(file_exists($locDir.$nom.$extension)){
+			$fichier = $webDir.$nom.$extension;
+		}
+		if($fichier == '' || Configuration::get('mode') == Configuration::MODE_PROD){
+			if(file_exists($locDir.$nom.'.min'.$extension)){
+				$fichier = $webDir.$nom.'.min'.$extension;
+			}
+		}
+		if($fichier == ''){
+			throw new Exception("Le fichier '$nom' n'a pas été trouvé ! ");
+		}
+		return $fichier;
 	}
 
 
@@ -30,7 +55,7 @@ class Html{
 		foreach ($listeAttributs as $key => $value) {
 			if(!is_bool($value)){
 				if(strlen($value)){
-					$attribut[] = strtolower($key) . '"' . $value . '"';
+					$attribut[] = strtolower($key) . '="' . $value . '"';
 				}
 			} else {
 				if($value){
