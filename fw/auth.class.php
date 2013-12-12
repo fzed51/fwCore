@@ -13,7 +13,7 @@ class Auth {
 		$this->_session = Session::getInstance();
 		$this->_data = array();
 		$this->_level = 0;
-		$this->_ipAdresse = filter_input (INPUT_SERVER,'REMOTE_ADDR', FILTER_VALIDATE_IP);
+		$this->_ipAdresse = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_NULL_ON_FAILURE);
 		if(isset($this->_session['Auth'])){
 			$auth = $this->_session['Auth'];
 			if(isset($auth['data'], $auth['level'], $auth['ipAdresse'])){
@@ -24,7 +24,7 @@ class Auth {
 		}
 	}
 	static private $_instance;
-		static public function getInstance() {
+	static public function getInstance() {
 		if(true === is_null(self::$_instance)){
 			self::$_instance = new self();
 		}
