@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,13 +19,13 @@
 	<!--[if IE]><link rel="shortcut icon" href="path/to/favicon.ico"><![endif]-->
 	<!-- or, set /favicon.ico for IE10 win -->
 	
-	<title>Starter Template for Bootstrap</title>
+	<title><?= $titre ;?></title>
 
     <!-- Bootstrap core CSS -->
 	<?= $this->html->css('bootstrap');?>
 
     <!-- Custom styles for this template -->
-	<?= $this->html->css('starter-template');?>
+	<?php //= $this->html->css('starter-template');?>
     <!--<link href="starter-template.css" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -76,7 +76,7 @@
 			<pre><?php var_dump($_SERVER); ?></pre>
 		</div>
 		<div class="col-lg-4">
-			<pre><?php var_dump(get_defined_constants(true)); ?></pre>
+			<pre><?php var_dump(get_defined_constants(true)['user']); ?></pre>
 		</div>
 		<div class="col-lg-4">
 			<pre><?php var_dump(get_defined_vars()); ?></pre>
