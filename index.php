@@ -14,7 +14,7 @@
 define('DS', DIRECTORY_SEPARATOR);
 define('WS', '/');
 define('ROOT', dirname(__FILE__) . DS);
-define('WEB_ROOT', '' . WS);
+define('WEB_ROOT', '/fwCore' . WS);
 
 define('ROOT_WWW', ROOT . 'www_root' . DS);
 define('ROOT_APP', ROOT . 'app' . DS);
@@ -27,10 +27,10 @@ define('ROOT_CONTROLEUR', ROOT_APP . 'controleur' . DS);
 define('ROOT_CONFIG',     ROOT_APP . 'config' . DS);
 
 define('ROOT_JS',    ROOT_WWW . 'script' . DS);
-define('WEB_JS',     WEB_ROOT . 'script' . WS);
+define('WEB_JS',     WEB_ROOT . 'www_root' . WS .'script' . WS);
 define('ROOT_CSS',   ROOT_WWW . 'style' . DS);
-define('WEB_CSS',    WEB_ROOT . 'style' . WS);
+define('WEB_CSS',    WEB_ROOT . 'www_root' . WS . 'style' . WS);
 define('ROOT_IMAGE', ROOT_WWW . 'image' . DS);
-define('WEB_IMAGE',  WEB_ROOT . 'image' . WS);
+define('WEB_IMAGE',  WEB_ROOT . 'www_root' . WS . 'image' . WS);
 
 require(ROOT_FWK.'bootstrap.php');
