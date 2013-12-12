@@ -15,8 +15,5 @@ $autoloader->addDir(ROOT_FWK, Autoloader::SANS_SOUSDOSSIER)
 	->addDir(ROOT_CONTROLEUR, Autoloader::SANS_SOUSDOSSIER)
 	->start();
 
-$auth = Auth::getInstance();
-$auth->test();
-
 $routeur = new Routeur();
 $routeur->route(new Requette());
