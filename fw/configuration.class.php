@@ -1,13 +1,13 @@
 <?php
 /**
  * Classe de gestion des paramètres de configuration.
+ * Inspirée du SimpleFramework de Baptiste Pesquet
  * Inspirée du SimpleFramework de Frédéric Guillot
  * (https://github.com/fguillot/simpleFramework)
  *
- * @author Baptiste Pesquet
+ * @author Fabien Sanchez
  */
-class Configuration
-{
+class Configuration {
 	/** Constantes qui deffinissent les mode de fonctionnement */
 	const MODE_PROD = 1;
 	const MODE_DEV  = 0;
@@ -25,8 +25,7 @@ class Configuration
      * @param string $valeurParDefaut Valeur à renvoyer par défaut
      * @return string Valeur du paramètre
      */
-    public static function get($nom, $valeurParDefaut = null)
-    {
+    public static function get($nom, $valeurParDefaut = null) {
         if ($nom == "mode"){
 			return self::$mode;
 		}
@@ -40,19 +39,19 @@ class Configuration
     }
 
     /**
-     * Renvoie le tableau des paramètres en le chargeant au besoin depuis un fichier de configuration.
-     * Les fichiers de configuration recherchés sont Config/dev.ini et Config/prod.ini (dans cet ordre)
+     * Renvoie le tableau des paramètres en le chargeant au besoin depuis un 
+	 * fichier de configuration. Les fichiers de configuration recherchés sont 
+	 * Config/dev.ini et Config/prod.ini (dans cet ordre)
      * 
      * @return array Tableau des paramètres
      * @throws Exception Si aucun fichier de configuration n'est trouvé
      */
-    private static function getParametres()
-    {
+    private static function getParametres() {
         if (self::$parametres == null) {
-            $cheminFichier = "Config/dev.ini";
+            $cheminFichier = ROOT_CONFIG . "dev.ini";
 			self::$mode = self::MODE_DEV;
             if (!file_exists($cheminFichier)) {
-                $cheminFichier = "Config/prod.ini";
+                $cheminFichier = ROOT_CONFIG . "prod.ini";
 				self::$mode = self::MODE_PROD;
             }
             if (!file_exists($cheminFichier)) {
