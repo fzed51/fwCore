@@ -1,10 +1,7 @@
 <?php
 
 /**
- * Html
- * Helper html pour HTML5
- * 
- * @package fwCore
+ * Helper pour HTML5
  */
 
 class Html{
@@ -13,34 +10,47 @@ class Html{
 	private $_stock_js = array();
 	private $_daraForm = array();
 	
+	/**
+	 * Transforme une array en chemin 
+	 * @param array $controlAction
+	 * @return string
+	 */
 	public function ctrAction(array $controlAction){
 		$adrCtrlActin = join(WS, $controlAction);
 		$adresse = WEB_ROOT . $adrCtrlActin;
 		return $adresse;
 	}
 	
+	/**
+	 * Cherche un fichier css ou js du site.
+	 * retourne la version minifié si elle existe.
+	 * @param string $nom
+	 * @param string $extension
+	 * @return string
+	 * @throws Exception
+	 */
 	protected function chercheFichier($nom, $extension){
 		if(Tools::finiPar($nom, $extension)){
 			$nom = substr($nom,0,-strlen($extension));
 		}
-		$locDir = '';
+		$rootDir = '';
 		$webDir = '';
 		$fichier = '';
 		switch ($extension) {
 			case '.css':
-				$locDir = ROOT_CSS;
+				$rootDir = ROOT_CSS;
 				$webDir = WEB_CSS;
 				break;
 			case '.js':
-				$locDir = ROOT_JS;
+				$rootDir = ROOT_JS;
 				$webDir = WEB_JS;
 				break;
 		}
-		if(file_exists($locDir.$nom.$extension)){
+		if(file_exists($rootDir.$nom.$extension)){
 			$fichier = $webDir.$nom.$extension;
 		}
 		if($fichier == '' || Configuration::get('mode') == Configuration::MODE_PROD){
-			if(file_exists($locDir.$nom.'.min'.$extension)){
+			if(file_exists($rootDir.$nom.'.min'.$extension)){
 				$fichier = $webDir.$nom.'.min'.$extension;
 			}
 		}
@@ -50,12 +60,16 @@ class Html{
 		return $fichier;
 	}
 
-
-	protected function concatAttributs($listeAttributs){
+	/**
+	 * formate une liste d'attributs HTML
+	 * @param array $listeAttributs
+	 * @return string
+	 */
+	protected function concatAttributs(array $listeAttributs){
 		$attribut = array();
 		foreach ($listeAttributs as $key => $value) {
 			if(!is_bool($value)){
-				if(strlen($value)){
+				if(strlen($value) > 0){
 					$attribut[] = strtolower($key) . '="' . $value . '"';
 				}
 			} else {
@@ -88,35 +102,30 @@ class Html{
 	}
 	
 	/**
-	 * function Link
-	 *   
+	 * Génère une balise link
 	 * @param string $fichier
-	 * @param bool $return
-	 * @param array $options
-	 * @return null/string
+	 * @param array $attributs
+	 * @return string
 	 */
-	public function link(/*string*/$href, array $options = array()){
-		$defaultOptions = array(
+	public function link(/*string*/$href, array $attributs = array()){
+		$defaultAttrbs = array(
 			"hreflang" => '',
 			"type" => '',
 			"rel" => '',
 			"media" => '',
 			"size" => ''
 		);
-		$option = array_merge($defaultOptions, $options);
-		$attributs = array_merge(array('href'=>$href), $option);
+		$attributs = array_merge($defaultAttrbs, $attributs, array('href'=>$href));
 		$link = $this->elementAutoClose('link', $attributs);
 		return $link;
 	}
 	
 	/**
-	 * fonction css
-	 * génère un lien avec une feuille de stye Externe;
-	 * 
-	 * @param	string		$fichier
-	 * @param	bool		$return
-	 * @param	array		$attributs
-	 * @return	string/null
+	 * Génère un lien avec une feuille de stye
+	 * @param string $fichier
+	 * @param bool $return
+	 * @param array $attributs
+	 * @return string|null
 	 */
 	public function css(/*string*/$fichier, /*bool*/$return = true, array $attributs = array()){
 		$defaultAttrbs = array(
@@ -129,7 +138,7 @@ class Html{
 		if(! filter_var($fichier, FILTER_VALIDATE_URL)){
 			$href = $this->chercheFichier($fichier, '.css');
 		}
-		$link = $this->link($href, $defaultAttrbs);
+		$link = $this->link($href, $attributs);
 		if($return){
 			return $link;
 		}else{
@@ -138,6 +147,12 @@ class Html{
 		}
 	}
 	
+	/**
+	 * Génère une balise script
+	 * @param string $script
+	 * @param array $attributs
+	 * @return string
+	 */
 	public function script(/*string*/$script, array $attributs = array()){
 		$defaultAttrbs = array(
 			'async' => false,
@@ -153,21 +168,33 @@ class Html{
 		return $script;
 	}
 	
+	/**
+	 * 
+	 * @param string $src
+	 * @param array $attributs
+	 * @return string
+	 */
 	public function scriptScr(/*string*/$src, array $attributs = array()) {
 		$attributs = array_merge($attributs, array('src' => $src));
 		return $this->script('', $attributs);
 	}
 	
-	public function js(/*string*/$script, /*bool*/$return = true, array $attributs = array()){
+	/**
+	 * 
+	 * @param string $src
+	 * @param bool $return
+	 * @param array $attributs
+	 * @return string|null
+	 */
+	public function js(/*string*/$src, /*bool*/$return = true, array $attributs = array()){
 		$defaultAttrbs = array(
-			'async' => false,
-			'charset' => '',
-			'defer' => false,
-			'src' => '',
-			'type' => 'application/javascript',
+			'type' => 'application/javascript'
 		);
 		$attributs = array_merge($defaultAttrbs, $attributs);
-		$script = '';
+		if(! filter_var($src, FILTER_VALIDATE_URL)){
+			$src = $this->chercheFichier($src, '.js');
+		}
+		$script = $this->scriptScr($src, $attributs);
 		if($return){
 			return $script;
 		}else{
@@ -176,14 +203,21 @@ class Html{
 		}
 	}
 	
-	public function startForm($action, array $attributs = array()){
+	/**
+	 * Ouvre la balise form
+	 * @param string $action
+	 * @param array $attributs
+	 * @param string $id
+	 * @return string
+	 */
+	public function startForm($action, array $attributs = array(), /*string*/$id = ''){
 		$defaultAttrbs = array(
-			'accept-charset' => 'stylesheet',
+			'accept-charset' => '',
 					// ISO-8859-1
 					// ISO-8859-15
 					// UTF-8
 			'autocomplete' => '', // on | off
-			'enctype' => 'application/x-www-form-urlencoded',
+			'enctype' => '',
 					// application/x-www-form-urlencoded
 					// multipart/form-data
 					// text/plain
@@ -200,9 +234,20 @@ class Html{
 			$this->_daraForm = $attributs['data'];
 			unset($attributs['data']);
 		}
-		$attributs = array_merge($defaultAttrbs, $attributs);
+		if(strlen($id)>0 && !isset($attributs['name'])){
+			$attributs['name'] = $id
+		}
+		$attributs = array_merge($defaultAttrbs,$attributs,array(
+					'action' => $action,
+					'id' => $id
+				));
+		return $this->startElement('form', $attributs);
 	}
 	
+	/**
+	 * Ferme la balise form
+	 * @return string
+	 */
 	public function endForm(){
 		$this->_daraForm = array();
 		return $this->endElement('form');
