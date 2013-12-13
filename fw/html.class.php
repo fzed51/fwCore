@@ -4,22 +4,10 @@
  * Helper pour HTML5
  */
 
-class Html{
+class Html extends ElementHtml {
 	
 	private $_stock_css = array();
 	private $_stock_js = array();
-	private $_daraForm = array();
-	
-	/**
-	 * Transforme une array en chemin 
-	 * @param array $controlAction
-	 * @return string
-	 */
-	public function ctrAction(array $controlAction){
-		$adrCtrlActin = join(WS, $controlAction);
-		$adresse = WEB_ROOT . $adrCtrlActin;
-		return $adresse;
-	}
 	
 	/**
 	 * Cherche un fichier css ou js du site.
@@ -60,47 +48,6 @@ class Html{
 		return $fichier;
 	}
 
-	/**
-	 * formate une liste d'attributs HTML
-	 * @param array $listeAttributs
-	 * @return string
-	 */
-	protected function concatAttributs(array $listeAttributs){
-		$attribut = array();
-		foreach ($listeAttributs as $key => $value) {
-			if(!is_bool($value)){
-				if(strlen($value) > 0){
-					$attribut[] = strtolower($key) . '="' . $value . '"';
-				}
-			} else {
-				if($value){
-					$attribut[] = strtolower($key);
-				}
-			}
-		}
-		return join(' ', $attribut);
-	}
-
-	protected function startElement($tag, $attrbs = array()) { 
-		$attrb = $this->concatAttributs($attrbs);
-		return "<$tag $attrb>";
-	}
-	
-	protected function endElement($tag) {
-		return "</$tag>";
-	}
-
-	protected function element($tag, $attrbs = array(), $content = ''){
-		return $this->startElement($tag, $attrbs) 
-				. $content
-				. $this->endElement($tag);
-	}
-	
-	protected function elementAutoClose($tag, $attrbs = array()){
-		$attrb = $this->concatAttributs($attrbs);
-		return "<$tag $attrb />";
-	}
-	
 	/**
 	 * Génère une balise link
 	 * @param string $fichier
@@ -203,53 +150,4 @@ class Html{
 		}
 	}
 	
-	/**
-	 * Ouvre la balise form
-	 * @param string $action
-	 * @param array $attributs
-	 * @param string $id
-	 * @return string
-	 */
-	public function startForm($action, array $attributs = array(), /*string*/$id = ''){
-		$defaultAttrbs = array(
-			'accept-charset' => '',
-					// ISO-8859-1
-					// ISO-8859-15
-					// UTF-8
-			'autocomplete' => '', // on | off
-			'enctype' => '',
-					// application/x-www-form-urlencoded
-					// multipart/form-data
-					// text/plain
-			'method' => 'POST', // GET | POST
-			'name' => '',
-			'novalidate' => false,
-			'target' => ''
-					// _blank
-					// _self
-					// _parent
-					// _top
-		);
-		if(isset($attributs['data'])){
-			$this->_daraForm = $attributs['data'];
-			unset($attributs['data']);
-		}
-		if(strlen($id)>0 && !isset($attributs['name'])){
-			$attributs['name'] = $id
-		}
-		$attributs = array_merge($defaultAttrbs,$attributs,array(
-					'action' => $action,
-					'id' => $id
-				));
-		return $this->startElement('form', $attributs);
-	}
-	
-	/**
-	 * Ferme la balise form
-	 * @return string
-	 */
-	public function endForm(){
-		$this->_daraForm = array();
-		return $this->endElement('form');
-	}
 }
