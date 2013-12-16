@@ -14,6 +14,7 @@
 class form extends ElementHtml{
 	
 	private $data;
+	private $error;
 		
 	/**
 	 * Ouvre la balise form
@@ -22,7 +23,7 @@ class form extends ElementHtml{
 	 * @param string $id
 	 * @return string
 	 */
-	public function startForm($action, array $attributs = array(), /*string*/$id = ''){
+	public function start($action, array $attributs = array(), /*string*/$id = ''){
 		$defaultAttrbs = array(
 			'accept-charset' => '',
 					// ISO-8859-1
@@ -60,11 +61,47 @@ class form extends ElementHtml{
 	 * Ferme la balise form
 	 * @return string
 	 */
-	public function endForm(){
+	public function end(){
 		$this->_daraForm = array();
 		return $this->endElement('form');
 	}
 	
+	/**
+	 * Initialise les données du formulaire
+	 * @param array $data
+	 * @return \form
+	 */
+	public function setData(array $data) {
+		$this->data = $data;
+		return $this;
+	}
+	/**
+	 * Initialise les messages d'erreurs du formulaire
+	 * @param array $error
+	 * @return \form
+	 */
+	public function setError(array $error) {
+		$this->error = $error;
+		return $this;
+	}
+	
+	/**
+	 * Retourne le message d'erreur d'un champ dans un span
+	 * @param string $field
+	 * @return string
+	 */
+	protected function getError(/*string*/$field){
+		if(isset($this->error[$field])){
+			return $this->element(
+					'span', 
+					array('class'=>'error'), 
+					$this->error[$field]
+				);
+		}
+		return '';
+	}
+
+
 	/**
 	 * Génère un tag label
 	 * @param string $libelle
@@ -72,28 +109,111 @@ class form extends ElementHtml{
 	 * @return string
 	 */
 	public function label(/*string*/$libelle, array $attributs = array()){
-		$label = '';
+		$label = $this->element('label', $attributs, $libelle);
 		return $label;
 	}
 	
 	/**
 	 * Génère un tag input
-	 * @param string $id
-	 * @param string $type
+	 * @param string $field
+	 * @param string $label
 	 * @param array $attributs
 	 * @return string
 	 */
-	public function input(/*string*/$id,/*string*/$type = 'text',  array $attributs = array()) {
-		if(!isset($attributs['value']) && isset($this->data['id'])){
-			$attributs['value'] = $this->data['id'];
+	public function input(/*string*/$field,/*string*/$label = null,  array $attributs = array()){
+		$defautAttibuts = array(
+				'autocomplete' => '',
+						// on
+						// off
+				'autofocus' => false,
+				'disabled' => false,
+				'list' => '',
+					// id from data_list tag
+				'max' => '',
+					// max pour type date et number
+				'min' => '',
+					// min pour type date et number
+				'step' => '',
+					// min pour type number
+				'type' => 'text',
+					// button cf : $this->button
+					// checkbox
+					// color
+					// date 
+					// datetime 
+					// datetime-local 
+					// email 
+					// file cf : $this->file
+					// hidden cf : $this->hidden
+					// image cf : $this->image
+					// month 
+					// number 
+					// password
+					// radio
+					// range
+					// reset cf : $this->reset
+					// search
+					// submit cf : $this->submit
+					// tel
+					// text
+					// time 
+					// url
+					// week
+				'value' => '',
+				'pattern' => '',
+				'placeholder' => '',
+				'readonly' => false,
+				'required' => false,
+				'maxlength' => '',
+				'size' => ''
+			);
+		if(!isset($attributs['value']) && isset($this->data[$field])){
+			$attributs['value'] = $this->data[$field];
 		}
-		$label = '';
-		if(isset($attributs['label'])){
-			$label = $attributs['label'];
-			unset($attributs['label']);
-		}
+		$attributs = array_merge($defautAttibuts, $attributs);
 		$input = '';
+		if(is_null($label)){
+			if(!isset($attributs['id'])){
+				$attributs['id'] = 'form' . ucfirst($field);
+			}
+			$input .= $this->label($label, array('for'=>$attributs['id']));
+		}
+		$input .= $this->elementAutoClose('input', $attributs);
+		$input .= $this->getError($field);
 		return $input;
 	}
 	
+	public function hidden($param) {
+		
+	}
+	public function image($param) {
+		
+	}
+	public function file($param) {
+		$defautAttibuts = array(
+				'accept' => '',
+						// audio/*
+						// video/*
+						// image/*
+						// MIME_type
+				'autofocus' => false,
+				'disabled' => false,
+				'type' => 'file',
+				'multiple' => false,
+				'placeholder' => '',
+				'readonly' => false,
+				'required' => false,
+				'size' => ''
+			);
+		$attributs = array_merge($defautAttibuts, $attributs);
+	}
+	public function submit($param) {
+		
+	}
+	public function reset($param) {
+		
+	}
+	public function select($param) {
+		
+	}
 }
