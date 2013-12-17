@@ -36,7 +36,7 @@ class Auth {
 	}
 	
 	public function test(){		
-		if($this->_ipAdresse == filter_input (INPUT_SERVER,'REMOTE_ADDR', FILTER_VALIDATE_IP) 
+		if($this->_ipAdresse == filter_var ($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP) 
 				&& $this->_level >= $this->_levelNeeded){
 			return true;
 		} else {
