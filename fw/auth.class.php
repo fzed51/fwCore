@@ -1,4 +1,6 @@
 <?php
+class AuthException extends Exception {
+}
 
 class Auth {
 	
@@ -40,7 +42,7 @@ class Auth {
 				&& $this->_level >= $this->_levelNeeded){
 			return true;
 		} else {
-			return false;
+			throw new AuthException("Le niveau d'autentification n'est pas sufisant ! ");
 		}
 	}
 	
