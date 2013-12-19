@@ -7,7 +7,7 @@
  */
 
 /**
- * Description of elementhtml
+ * Description of ElementHtml
  *
  * @author fabien.sanchez
  */
@@ -19,19 +19,19 @@ class ElementHtml {
 	 * @return string
 	 */
 	protected function concatAttributs(array $listeAttributs){
-		$attribut = array();
+		$strAttribut = array();
 		foreach ($listeAttributs as $key => $value) {
 			if(!is_bool($value)){
 				if(strlen($value) > 0){
-					$attribut[] = strtolower($key) . '="' . $value . '"';
+					$strAttribut[] = strtolower($key) . '="' . $value . '"';
 				}
 			} else {
 				if($value){
-					$attribut[] = strtolower($key);
+					$strAttribut[] = strtolower($key);
 				}
 			}
 		}
-		return join(' ', $attribut);
+		return join(' ', $strAttribut);
 	}
 
 	protected function startElement($tag, $attrbs = array()) { 
@@ -60,8 +60,13 @@ class ElementHtml {
 	 * @return string
 	 */
 	public function ctrAction(array $controlAction){
-		$adrCtrlActin = join(WS, $controlAction);
-		$adresse = WEB_ROOT . $adrCtrlActin;
-		return $adresse;
+		if(Configuration::get('engine_rewrite', 'Off') == 'On'){
+			$adrCtrlActin = join(WS, $controlAction);
+			$adresse = WEB_ROOT . $adrCtrlActin;
+		} else {
+			$adresse = WEB_ROOT . "index.php?control={$controlAction[0]}&action={$controlAction[1]}";
+		}
+		
+		return urldecode($adresse);
 	}
 }
