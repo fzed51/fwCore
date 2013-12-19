@@ -2,7 +2,7 @@
 /**
  * fwCore
  * @author Fabien SANCHEZ
- * @version 0.3.1
+ * @version 0.5.1
  * @license copyright 2013 Fabien SANCHEZ
  * ==========================================================================
  * fwCore est un framework léger
@@ -14,8 +14,9 @@
 define('DS', DIRECTORY_SEPARATOR);
 define('WS', '/');
 define('ROOT', dirname(__FILE__) . DS);
-define('WEB_ROOT', '/fwCore' . WS);
-
+$buildWebRoot = filter_var(dirname($_SERVER['PHP_SELF']), FILTER_SANITIZE_URL);
+define('WEB_ROOT', $buildWebRoot . WS);
+unset($buildWebRoot);
 define('ROOT_WWW', ROOT . 'www_root' . DS);
 define('ROOT_APP', ROOT . 'app' . DS);
 define('ROOT_FWK', ROOT . 'fw' . DS);
