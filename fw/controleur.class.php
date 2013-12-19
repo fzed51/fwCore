@@ -64,12 +64,14 @@ abstract class Controleur {
 			$this->$avantAction();
 		}
 		if(method_exists($this, $action)){
-			$this->vue = new Vue(array($this->name, $action));
-			$this->$action($requette);
-			ob_start('ob_gzhandler');
-			$this->vue->set($this->_data);
-			echo $this->vue->generer();
-			ob_end_flush();
+			if($this->auth->test()){
+				$this->vue = new Vue(array($this->name, $action));
+				$this->$action($requette);
+				ob_start('ob_gzhandler');
+				$this->vue->set($this->_data);
+				echo $this->vue->generer();
+				ob_end_flush();
+			}
 		} else {
 			throw new ControleurException("L'action '{$this->action}' n'existe pas dans le controleur '{$this->name}'!");
 		}
