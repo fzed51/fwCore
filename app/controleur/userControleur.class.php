@@ -12,5 +12,16 @@
  * @author fabien.sanchez
  */
 class userControleur extends Controleur{
-	
+	public function avantIndex() {
+		$this->auth->setLevelNeeded(1);
+	}
+	public function index(){
+		$this->titre = "User";
+	}
+	public function avantLogin() {
+		$this->auth->setLevelNeeded(0);
+	}
+	public function login(){
+		$this->titre = "User - login";
+	}
 }
