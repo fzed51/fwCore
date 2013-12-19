@@ -50,6 +50,9 @@ class form extends ElementHtml{
 		if(strlen($id)>0 && !isset($attributs['name'])){
 			$attributs['name'] = $id;
 		}
+		if(is_array($action)){
+			$action = $this->ctrAction($action);
+		}
 		$attributs = array_merge($defaultAttrbs,$attributs,array(
 					'action' => $action,
 					'id' => $id
@@ -101,7 +104,6 @@ class form extends ElementHtml{
 		return '';
 	}
 
-
 	/**
 	 * Génère un tag label
 	 * @param string $libelle
@@ -120,7 +122,7 @@ class form extends ElementHtml{
 	 * @param array $attributs
 	 * @return string
 	 */
-	public function input(/*string*/$field,/*string*/$label = null,  array $attributs = array()){
+	public function input(/*string*/ $field, /*string*/ $label = null,  array $attributs = array()){
 		$defautAttibuts = array(
 				'autocomplete' => '',
 						// on
@@ -183,13 +185,13 @@ class form extends ElementHtml{
 		return $input;
 	}
 	
-	public function hidden($param) {
+	public function hidden(/*string*/ $field, array $attributs = array()) {
 		
 	}
-	public function image($param) {
+	public function image(/*string*/ $field, /*string*/ $label = null,  array $attributs = array()) {
 		
 	}
-	public function file($param) {
+	public function file(/*string*/ $field, /*string*/ $label = null,  array $attributs = array()) {
 		$defautAttibuts = array(
 				'accept' => '',
 						// audio/*
@@ -207,13 +209,13 @@ class form extends ElementHtml{
 			);
 		$attributs = array_merge($defautAttibuts, $attributs);
 	}
-	public function submit($param) {
+	public function submit(/*string*/ $field, /*string*/ $label = null,  array $attributs = array()) {
 		
 	}
-	public function reset($param) {
+	public function reset(/*string*/ $field, /*string*/ $label = null,  array $attributs = array()) {
 		
 	}
-	public function select($param) {
+	public function select(/*string*/ $field, /*string*/ $label = null,  array $attributs = array()) {
 		
 	}
 }
