@@ -12,7 +12,9 @@
  * @author fabien.sanchez
  */
 class HomeControleur extends Controleur{
-	//put your code here
+	public function avantIndex() {
+		$this->auth->setLevelNeeded(0);
+	}
 	public function index(){
 		$this->titre = "Bonjour";
 	}
