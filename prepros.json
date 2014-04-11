@@ -1,36 +1,37 @@
 {
   "id": "532da34d",
+  "cfgVersion": 1,
   "name": "fwCore",
-  "files": [
-    {
-      "id": "2e8f9ea2",
-      "pid": "532da34d",
-      "name": "README.md",
-      "type": "MD",
-      "input": "README.md",
-      "output": "README.html",
+  "files": {
+    "2e8f9ea2": {
       "config": {
         "autoCompile": true,
         "sanitize": false,
         "gfm": true
-      }
-    },
-    {
-      "id": "e5668182",
+      },
+      "id": "2e8f9ea2",
       "pid": "532da34d",
-      "name": "bootstrap.js",
-      "type": "JS",
-      "input": "www_root\\script\\bootstrap.js",
-      "output": "www_root\\script\\{{jsMinPath}}\\bootstrap.min.js",
+      "name": "README.md",
+      "type": "MD",
+      "input": "README.md"
+    },
+    "e5668182": {
       "config": {
         "autoCompile": true,
         "uglify": true,
         "mangle": true
-      }
+      },
+      "id": "e5668182",
+      "pid": "532da34d",
+      "name": "bootstrap.js",
+      "type": "JS",
+      "input": "www_root\\script\\bootstrap.js"
     }
-  ],
-  "imports": [],
+  },
+  "imports": {},
+  "images": {},
   "config": {
+    "watch": false,
     "liveRefresh": true,
     "liveRefreshDelay": "10",
     "filterPatterns": "",
@@ -39,12 +40,25 @@
     "cssPath": "style",
     "jsPath": "script",
     "htmlPath": "",
-    "jsMinPath": "",
+    "minJsPath": "min/",
+    "htmlExtension": ".html",
+    "cssPathType": "REPLACE_TYPE",
+    "htmlPathType": "REPLACE_TYPE",
+    "jsPathType": "REPLACE_TYPE",
+    "minJsPathType": "RELATIVE_FILEDIR",
+    "htmlTypes": "jade, haml, slim, markdown, md",
+    "cssTypes": "less, sass, stylus, scss, styl",
+    "jsTypes": "coffee, coffeescript, coffeescripts, ls, livescript, livescripts",
+    "cssPreprocessorPath": "",
+    "htmlPreprocessorPath": "",
+    "jsPreprocessorPath": "",
+    "minJsPreprocessorPath": "",
     "autoprefixerBrowsers": "",
     "ftpHost": "",
     "ftpPort": "21",
     "ftpRemotePath": "",
     "ftpIgnorePreprocessorFiles": true,
+    "ftpType": "FTP",
     "ftpExcludePatterns": "",
     "ftpPassword": "",
     "ftpUsername": ""
