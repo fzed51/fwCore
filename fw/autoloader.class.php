@@ -144,7 +144,7 @@ class Autoloader {
 				require ($this->_classes[strtolower($class)]);
 				return true;
 			} else {
-				throw new AutoloaderException("La class '$class' ne peut pas être chargée! ");
+				throw new AutoloaderException("La class '$class' ne peut pas Ãªtre chargÃ©e! ");
 			}
 			return false;
 		}
