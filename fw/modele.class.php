@@ -11,6 +11,7 @@ class ModelException extends Exception {
 
 abstract class Model {
 	
+	protected $_prefix;
 	protected $_table;
 	protected $_config;
 	protected $_pk;
@@ -35,6 +36,10 @@ abstract class Model {
 	}
 	final protected function getPk() {
 		return $this->_pk;
+	}
+	final protected function setPrefix($prefix) {
+		$this->_prefix = $prefix;
+		return $this;
 	}
 	
 	public function getById($id){
